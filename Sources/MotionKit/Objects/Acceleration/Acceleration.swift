@@ -4,10 +4,11 @@
 // Copyright © 2021 Alexandre H. Saad
 //
 
+import Arithmetics
 import Measures
 
 /// A structure containing 3-axis acceleration values.
-public struct Acceleration {
+public struct Acceleration: Equatable, Hashable, Sendable {
 	/// X-axis acceleration in gravitational force.
 	public let x: Measure<Force>
 	
