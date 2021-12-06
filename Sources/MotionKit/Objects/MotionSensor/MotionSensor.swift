@@ -9,10 +9,6 @@ public enum MotionSensor: String {
 	/// The accelerometer motion sensor.
 	case accelerometer
 	
-	/// The altimeter motion sensor.
-	@available(*, unavailable)
-	case altimeter
-	
 	/// The gyroscope motion sensor.
 	case gyroscope
 	
