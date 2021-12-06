@@ -23,9 +23,51 @@ public class MotionManager: ObservableObject {
 		self.frequency = frequency.converted(to: .hertz)
 	}
 	
+	/// The underlying motion manager from Apple's CoreMotion framework..
 	private let motionManager: CMMotionManager = .init()
 	
+	///
 	public static let shared: MotionManager = .init()
+	
+	/// Subscribes to the specified sensor to start updates.
+	///
+	/// - Parameter sensor: The sensor to subscribe to.
+	/// - Throws: A motion sensor error.
+	public func subscribe(to sensor: MotionSensor) throws {
+		switch sensor {
+		case .accelerometer:
+			try self.subscribeToAccelerometer()
+			
+		case .gyroscope:
+			try self.subscribeToGyrometer()
+			
+		case .magnetometer:
+			try self.subscribeToMagnetometer()
+		
+		@unknown default:
+			return
+		}
+	}
+	
+	/// Unsubscribes from the specified sensor to stop updates.
+	///
+	/// - Parameter sensor: The sensor to unsubscribe from.
+	/// - Throws: A motion error.
+	public func unsubscribe(from sensor: MotionSensor) throws {
+		switch sensor {
+		case .accelerometer:
+			try self.unsubscribeFromAccelerometer()
+			
+		case .gyroscope:
+			try self.unsubscribeFromGyrometer()
+			
+		case .magnetometer:
+			try self.unsubscribeFromMagnetometer()
+		
+		@unknown default:
+			return
+		}
+	}
 	
 //	/// The cancellable subscription of the timer.
 //	private var cancellable: AnyCancellable? = nil
@@ -79,50 +121,6 @@ public class MotionManager: ObservableObject {
 //	 - returns: the current MotionKit instance.
 //	 */
 //	func updateAll(except: [MotionSensor], every: TimeInterval, _ timeUnit: TimeUnit) -> MotionKit
-}
-
-// MARK: - Shared
-
-extension MotionManager {
-	/// Subscribes to the specified sensor to start updates.
-	///
-	/// - Parameter sensor: The sensor to subscribe to.
-	/// - Throws: A motion sensor error.
-	public func subscribe(to sensor: MotionSensor) throws {
-		switch sensor {
-		case .accelerometer:
-			try self.subscribeToAccelerometer()
-			
-		case .gyroscope:
-			try self.subscribeToGyrometer()
-			
-		case .magnetometer:
-			try self.subscribeToMagnetometer()
-		
-		@unknown default:
-			return
-		}
-	}
-	
-	/// Unsubscribes from the specified sensor to stop updates.
-	///
-	/// - Parameter sensor: The sensor to unsubscribe from.
-	/// - Throws: A motion error.
-	public func unsubscribe(from sensor: MotionSensor) throws {
-		switch sensor {
-		case .accelerometer:
-			try self.unsubscribeFromAccelerometer()
-			
-		case .gyroscope:
-			try self.unsubscribeFromGyrometer()
-			
-		case .magnetometer:
-			try self.unsubscribeFromMagnetometer()
-		
-		@unknown default:
-			return
-		}
-	}
 }
 
 // MARK: - Accelerometer
