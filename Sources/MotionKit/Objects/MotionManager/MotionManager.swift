@@ -13,23 +13,34 @@ import CoreMotion
 
 ///
 public class MotionManager: ObservableObject {
-	/// The update frequency in herts.
-	private let frequency: Measure<Frequency>
-	
 	/// Creates a new instance.
-	///
-	/// - Parameter frequency: The update frequency.
-	private init(frequency: Measure<Frequency> = .init(60, .hertz)) {
-		self.frequency = frequency.converted(to: .hertz)
-	}
+	private init() {}
 	
 	/// The underlying motion manager from Apple's CoreMotion framework..
 	private let motionManager: CMMotionManager = .init()
 	
-	///
+	/// The unique shared instance.
 	public static let shared: MotionManager = .init()
 	
-	/// Subscribes to the specified sensor to start updates.
+	/// Updates the specified sensor frequency.
+	///
+	/// - Parameters:
+	///   - sensor: The sensor to update.
+	///   - frequency: The new frequency.
+	public func update(_ sensor: MotionSensor, to frequency: Measure<Frequency>) {
+		switch sensor {
+		case .accelerometer:
+			self.updateAccelerometer(to: frequency)
+			
+		case .gyrometer:
+			self.updateGyrometer(to: frequency)
+			
+		case .magnetometer:
+			self.updateMagnetometer(to: frequency)
+		}
+	}
+	
+	/// Subscribes to the specified sensor.
 	///
 	/// - Parameter sensor: The sensor to subscribe to.
 	/// - Throws: A motion sensor error.
@@ -38,14 +49,11 @@ public class MotionManager: ObservableObject {
 		case .accelerometer:
 			try self.subscribeToAccelerometer()
 			
-		case .gyroscope:
+		case .gyrometer:
 			try self.subscribeToGyrometer()
 			
 		case .magnetometer:
 			try self.subscribeToMagnetometer()
-		
-		@unknown default:
-			return
 		}
 	}
 	
@@ -58,69 +66,13 @@ public class MotionManager: ObservableObject {
 		case .accelerometer:
 			try self.unsubscribeFromAccelerometer()
 			
-		case .gyroscope:
+		case .gyrometer:
 			try self.unsubscribeFromGyrometer()
 			
 		case .magnetometer:
 			try self.unsubscribeFromMagnetometer()
-		
-		@unknown default:
-			return
 		}
 	}
-	
-//	/// The cancellable subscription of the timer.
-//	private var cancellable: AnyCancellable? = nil
-	
-//	/**
-//	 Subcribe to a parrticular motion sensor.
-//
-//	 - parameter to: the sensor to which we are subscribing.
-//	 - parameter handler: the sensor event handler.
-//
-//	 - throws: MKError.
-//
-//	 - returns: the current MotionKit instance.
-//	 */
-//	public func subcribe(
-//		_ to: MotionSensor,
-//		handler: @escaping (MotionData) -> ()
-//	) throws -> Self {
-//
-//	}
-//
-//	/**
-//	 Set the sampling period for a sensor. Will have no effect on the Altimeter sampling period.
-//
-//	 - parameter sensor: the sensor for which we are setting the sampling period.
-//	 - parameter every: the sampling TimeInterval in seconds.
-//
-//	 - returns: the current MotionKit instance.
-//	 */
-//	func update(
-//		_ sensor: MotionSensor,
-//		every: TimeInterval,
-//		_ timeUnit: TimeUnit
-//	) -> Self
-//
-//	/**
-//	 Set the sampling period for all motion sensors (except Altimeter).
-//
-//	 - parameter every: the sampling TimeInterval in seconds.
-//
-//	 - returns: the current MotionKit instance.
-//	 */
-//	func updateAll(every: TimeInterval, _ timeUnit: TimeUnit) -> MotionKit
-//
-//	/**
-//	 Set the sampling period for all motion sensors (except the provided list of sensors, and Altimeter).
-//
-//	 - parameter every: the sampling TimeInterval in seconds.
-//	 - parameter except: the list of sensors for which the TimeInterval will not be set.
-//
-//	 - returns: the current MotionKit instance.
-//	 */
-//	func updateAll(except: [MotionSensor], every: TimeInterval, _ timeUnit: TimeUnit) -> MotionKit
 }
 
 // MARK: - Accelerometer
@@ -149,7 +101,19 @@ extension MotionManager {
 		return self.motionManager.isAccelerometerActive
 	}
 	
-	/// Subscribes to the accelerometer to start updates.
+	/// The cycles per second at which to deliver accelerometer data.
+	public var accelerometerFrequency: Measure<Frequency> {
+		let value: Double = self.motionManager.accelerometerUpdateInterval
+		
+		return .init(value, .hertz)
+	}
+	
+	/// Updates the accelerometer frequency.
+	private func updateAccelerometer(to frequency: Measure<Frequency>) {
+		self.motionManager.accelerometerUpdateInterval = frequency.converted(to: .second).value
+	}
+	
+	/// Subscribes to the accelerometer.
 	///
 	/// - Throws: A motion sensor error.
 	private func subscribeToAccelerometer() throws {
@@ -160,7 +124,7 @@ extension MotionManager {
 		self.motionManager.startAccelerometerUpdates()
 	}
 	
-	/// Unsubscribes from the accelerometer to stop updates.
+	/// Unsubscribes from the accelerometer.
 	///
 	/// - Throws: A motion sensor error.
 	private func unsubscribeFromAccelerometer() throws {
@@ -198,23 +162,35 @@ extension MotionManager {
 		return self.motionManager.isMagnetometerActive
 	}
 	
-	/// Subscribes to the gyrometer to start updates.
+	/// The cycles per second at which to deliver gyrometer data.
+	public var gyrometerFrequency: Measure<Frequency> {
+		let value: Double = self.motionManager.gyroUpdateInterval
+		
+		return .init(value, .hertz)
+	}
+	
+	/// Updates the gyrometer frequency.
+	private func updateGyrometer(to frequency: Measure<Frequency>) {
+		self.motionManager.gyroUpdateInterval = frequency.converted(to: .second).value
+	}
+	
+	/// Subscribes to the gyrometer.
 	///
 	/// - Throws: A motion sensor error.
 	private func subscribeToGyrometer() throws {
 		guard self.isGyrometerAvailable else {
-			throw MotionSensorError.unavailable(.gyroscope)
+			throw MotionSensorError.unavailable(.gyrometer)
 		}
 		
 		self.motionManager.startGyroUpdates()
 	}
 	
-	/// Unsubscribes from the gyrometer to stop updates.
+	/// Unsubscribes from the gyrometer.
 	///
 	/// - Throws: A motion sensor error.
 	private func unsubscribeFromGyrometer() throws {
 		guard self.isGyrometerActive else {
-			throw MotionSensorError.inactive(.gyroscope)
+			throw MotionSensorError.inactive(.gyrometer)
 		}
 		
 		self.motionManager.stopGyroUpdates()
@@ -247,7 +223,19 @@ extension MotionManager {
 		return self.motionManager.isMagnetometerActive
 	}
 	
-	/// Subscribes to the magnetometer to start updates.
+	/// The cycles per second at which to deliver magnetometer data.
+	public var magnetometerFrequency: Measure<Frequency> {
+		let value: Double = self.motionManager.magnetometerUpdateInterval
+		
+		return .init(value, .hertz)
+	}
+	
+	/// Updates the magnetometer frequency.
+	private func updateMagnetometer(to frequency: Measure<Frequency>) {
+		self.motionManager.magnetometerUpdateInterval = frequency.converted(to: .second).value
+	}
+	
+	/// Subscribes to the magnetometer.
 	///
 	/// - Throws: A motion sensor error.
 	private func subscribeToMagnetometer() throws {
@@ -258,7 +246,7 @@ extension MotionManager {
 		self.motionManager.startMagnetometerUpdates()
 	}
 	
-	/// Unsubscribes from the magnetometer to stop updates.
+	/// Unsubscribes from the magnetometer.
 	///
 	/// - Throws: A motion sensor error.
 	private func unsubscribeFromMagnetometer() throws {
