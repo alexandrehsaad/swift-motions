@@ -9,8 +9,8 @@ public enum MotionSensor: String {
 	/// The accelerometer motion sensor.
 	case accelerometer
 	
-	/// The gyroscope motion sensor.
-	case gyroscope
+	/// The gyrometer motion sensor.
+	case gyrometer
 	
 	/// The magnetometer motion sensor.
 	case magnetometer
