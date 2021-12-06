@@ -1,0 +1,25 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "swift-arithmetics",
+        "repositoryURL": "https://github.com/alexandrehsaad/swift-arithmetics",
+        "state": {
+          "branch": "main",
+          "revision": "497b63c3cef2dc96088c344afdbb21d4459b676d",
+          "version": null
+        }
+      },
+      {
+        "package": "swift-measures",
+        "repositoryURL": "https://github.com/alexandrehsaad/swift-measures",
+        "state": {
+          "branch": "main",
+          "revision": "ec25a61ea8988d930b4f4495668be4a522feed51",
+          "version": null
+        }
+      }
+    ]
+  },
+  "version": 1
+}
