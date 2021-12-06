@@ -7,8 +7,12 @@ let package = Package(
     defaultLocalization: "en",
     products: [
         .library(name: "MotionKit", targets: ["MotionKit"])
-    ], targets: [
-        .target(name: "MotionKit", dependencies: []),
+    ], dependencies: [
+		.package(name: "swift-measures", url: "https://github.com/alexandrehsaad/swift-measures", branch: "main")
+	], targets: [
+		.target(name: "MotionKit", dependencies: [
+			.product(name: "Measures", package: "swift-measures"),
+		]),
         .testTarget(name: "MotionKitTests", dependencies: ["MotionKit"]),
     ], swiftLanguageVersions: [.version("5.5")]
 )
