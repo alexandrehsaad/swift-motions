@@ -76,3 +76,7 @@ fastlane/test_output
 # https://github.com/johnno1962/injectionforxcode
 
 iOSInjectionProject/
+Sources/MotionKit/Objects/.DS_Store
+Sources/MotionKit/.DS_Store
+Sources/.DS_Store
+.DS_Store

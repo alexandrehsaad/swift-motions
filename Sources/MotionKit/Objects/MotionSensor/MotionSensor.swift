@@ -5,7 +5,7 @@
 //
 
 /// A representation of a motion sensor.
-public enum MotionSensor {
+public enum MotionSensor: String {
 	/// The accelerometer motion sensor.
 	case accelerometer
 	
@@ -17,6 +17,5 @@ public enum MotionSensor {
 	case gyroscope
 	
 	/// The magnetometer motion sensor.
-	@available(*, unavailable)
 	case magnetometer
 }
