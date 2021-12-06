@@ -80,3 +80,4 @@ Sources/MotionKit/Objects/.DS_Store
 Sources/MotionKit/.DS_Store
 Sources/.DS_Store
 .DS_Store
+*.resolved
