@@ -1,10 +1,10 @@
-// Rotation+AdditiveArithmetic.swift
+// RotationRate+AdditiveArithmetic.swift
 // MotionKit
 //
 // Copyright © 2021 A. H. de Quatre Ltd.
 //
 
-extension Rotation: AdditiveArithmetic {
+extension RotationRate: AdditiveArithmetic {
 	public static let zero: Self = .init(x: .zero, y: .zero, z: .zero)
 	
 	/// Adds two values and produces their sum.

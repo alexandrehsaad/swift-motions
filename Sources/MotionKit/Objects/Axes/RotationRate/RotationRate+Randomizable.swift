@@ -1,10 +1,10 @@
-// Rotation+Randomizable.swift
+// RotationRate+Randomizable.swift
 // MotionKit
 //
 // Copyright © 2021 Alexandre H. Saad
 //
 
-extension Rotation {
+extension RotationRate {
 	/// Returns a random instance within the specified range.
 	///
 	/// - Parameter range: The range in which to create a random value.
