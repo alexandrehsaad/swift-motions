@@ -8,16 +8,16 @@ import Measures
 
 /// A structure containing 3-axis magnetic field values.
 public struct MagneticField: Equatable, Hashable, Sendable {
-	/// X-axis magnetic field in microteslas.
+	/// The value for the X-axis magnetic field in microteslas.
 	public let x: Measure<MagneticFluxDensity>
 	
-	/// Y-axis magnetic field in microteslas.
+	/// The value for the Y-axis magnetic field in microteslas.
 	public let y: Measure<MagneticFluxDensity>
 	
-	/// Y-axis magnetic field in microteslas.
+	/// The value for the Y-axis magnetic field in microteslas.
 	public let z: Measure<MagneticFluxDensity>
 	
-	/// Creates a new instance with the specified x, y and z axes in microteslas.
+	/// Creates a new instance with the specified axes in microteslas.
 	///
 	/// - Parameters:
 	///   - x: The X-axis.
