@@ -160,12 +160,12 @@ extension MotionManager {
 extension MotionManager {
 	/// A boolean value indicating whether the gyrometer is active.
 	public var isGyrometerActive: Bool {
-		return self.motionManager.isMagnetometerActive
+		return self.motionManager.isGyroActive
 	}
 	
 	/// A boolean value indicating whether the gyrometer is available.
 	public var isGyrometerAvailable: Bool {
-		return self.motionManager.isMagnetometerAvailable
+		return self.motionManager.isGyroAvailable
 	}
 	
 	/// The cycles per second at which to deliver gyrometer data.
