@@ -21,22 +21,6 @@ public class MotionManager {
 	/// The shared instance.
 	public static let shared: MotionManager = .init()
 	
-//	/// Subscribes to all the sensors.
-//	///
-//	/// - Parameter sensor: The sensor to subscribe to.
-//	/// - Throws: A motion sensor error.
-//	@available(iOS 15, macOS 12, watchOS 8, *)
-//	public func subscribeToAll() async throws -> MotionData? {
-//		guard let acceleration: Acceleration = try await self.subscribeToAccelerometer(),
-//			  let magneticField: MagneticField = try await self.subscribeToMagnetometer(),
-//			  let rotationRate: RotationRate = try await self.subscribeToGyrometer()
-//		else {
-//			return nil
-//		}
-//		
-//		return .init(acceleration: acceleration, magneticField: magneticField, rotationRate: rotationRate)
-//	}
-	
 	/// Unsubscribes from the specified sensor.
 	///
 	/// - Parameter sensor: The sensor to unsubscribe from.
@@ -129,6 +113,7 @@ extension MotionManager {
 	
 	/// Subscribes to the accelerometer.
 	///
+	/// - Returns: An asynchronous stream of data from the accelerometer.
 	/// - Throws: A motion sensor error.
 	@available(iOS 15, macOS 12, watchOS 8, *)
 	public func subscribeToAccelerometer() throws -> AsyncStream<Acceleration> {
@@ -205,26 +190,27 @@ extension MotionManager {
 	
 	/// Subscribes to the gyrometer.
 	///
+	/// - Returns: An asynchronous stream of data from the gyrometer.
 	/// - Throws: A motion sensor error.
 	@available(iOS 15, macOS 12, watchOS 8, *)
-	public func subscribeToGyrometer() async throws -> RotationRate? {
+	public func subscribeToGyrometer() throws -> AsyncStream<RotationRate> {
 		guard self.isGyrometerAvailable else {
 			throw MotionSensorError.unavailable(.gyrometer)
 		}
 		
-		return await withCheckedContinuation { (continuation) in
+		return AsyncStream { (continuation) in
 			self.motionManager.startGyroUpdates(to: OperationQueue()) { (data, _) in
-				guard let data = data else {
-					return continuation.resume(returning: nil)
+				if let data = data {
+					let rotationRate: RotationRate = .init(
+						x: data.rotationRate.x,
+						y: data.rotationRate.y,
+						z: data.rotationRate.z
+					)
+					
+					continuation.yield(rotationRate)
+				} else {
+					continuation.finish()
 				}
-				
-				let rotationRate: RotationRate = .init(
-					x: data.rotationRate.x,
-					y: data.rotationRate.y,
-					z: data.rotationRate.z
-				)
-				
-				continuation.resume(returning: rotationRate)
 			}
 		}
 	}
@@ -281,26 +267,27 @@ extension MotionManager {
 	
 	/// Subscribes to the magnetometer.
 	///
+	/// - Returns: An asynchronous stream of data from the magnetometer.
 	/// - Throws: A motion sensor error.
 	@available(iOS 15, macOS 12, watchOS 8, *)
-	public func subscribeToMagnetometer() async throws -> MagneticField? {
+	public func subscribeToMagnetometer() throws -> AsyncStream<MagneticField> {
 		guard self.isMagnetometerAvailable else {
 			throw MotionSensorError.unavailable(.magnetometer)
 		}
 		
-		return await withCheckedContinuation { (continuation) in
+		return AsyncStream { (continuation) in
 			self.motionManager.startMagnetometerUpdates(to: OperationQueue()) { (data, _) in
-				guard let data = data else {
-					return continuation.resume(returning: nil)
+				if let data = data {
+					let magneticField: MagneticField = .init(
+						x: data.magneticField.x,
+						y: data.magneticField.y,
+						z: data.magneticField.z
+					)
+					
+					continuation.yield(magneticField)
+				} else {
+					continuation.finish()
 				}
-				
-				let magneticField: MagneticField = .init(
-					x: data.magneticField.x,
-					y: data.magneticField.y,
-					z: data.magneticField.z
-				)
-				
-				continuation.resume(returning: magneticField)
 			}
 		}
 	}
