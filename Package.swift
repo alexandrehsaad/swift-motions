@@ -3,16 +3,15 @@
 import PackageDescription
 
 let package = Package(
-    name: "motion-kit",
+    name: "swift-motion",
     defaultLocalization: "en",
     products: [
-        .library(name: "MotionKit", targets: ["MotionKit"])
+        .library(name: "Motion", targets: ["Motion"])
     ], dependencies: [
 		.package(name: "swift-measures", url: "https://github.com/alexandrehsaad/swift-measures", branch: "main")
 	], targets: [
-		.target(name: "MotionKit", dependencies: [
+		.target(name: "Motion", dependencies: [
 			.product(name: "Measures", package: "swift-measures"),
 		]),
-        .testTarget(name: "MotionKitTests", dependencies: ["MotionKit"]),
     ], swiftLanguageVersions: [.version("5.5")]
 )
