@@ -8,19 +8,34 @@ import Measures
 
 #if canImport(CoreMotion)
 
-import Combine
 import CoreMotion
 
-///
-public class MotionManager: ObservableObject {
+/// A reprensentation of the motion manager.
+public class MotionManager {
 	/// Creates a new instance.
 	private init() {}
 	
 	/// The underlying motion manager from Apple's CoreMotion framework..
 	private let motionManager: CMMotionManager = .init()
 	
-	/// The unique shared instance.
+	/// The shared instance.
 	public static let shared: MotionManager = .init()
+	
+	/// Subscribes to all the sensors.
+	///
+	/// - Parameter sensor: The sensor to subscribe to.
+	/// - Throws: A motion sensor error.
+	@available(iOS 15, macOS 12, watchOS 8, *)
+	public func subscribeToAll() async throws -> MotionData? {
+		guard let acceleration: Acceleration = try await self.subscribeToAccelerometer(),
+			  let magneticField: MagneticField = try await self.subscribeToMagnetometer(),
+			  let rotationRate: RotationRate = try await self.subscribeToGyrometer()
+		else {
+			return nil
+		}
+		
+		return .init(acceleration: acceleration, magneticField: magneticField, rotationRate: rotationRate)
+	}
 	
 	/// Unsubscribes from the specified sensor.
 	///
@@ -176,7 +191,7 @@ extension MotionManager {
 	}
 	
 	/// The latest sample of data from the gyrometer.
-	public var lastRotation: Rotation? {
+	public var lastRotation: RotationRate? {
 		guard let data = self.motionManager.gyroData else {
 			return nil
 		}
@@ -192,7 +207,7 @@ extension MotionManager {
 	///
 	/// - Throws: A motion sensor error.
 	@available(iOS 15, macOS 12, watchOS 8, *)
-	public func subscribeToGyrometer() async throws -> Rotation? {
+	public func subscribeToGyrometer() async throws -> RotationRate? {
 		guard self.isGyrometerAvailable else {
 			throw MotionSensorError.unavailable(.gyrometer)
 		}
@@ -203,13 +218,13 @@ extension MotionManager {
 					return continuation.resume(returning: nil)
 				}
 				
-				let rotation: Rotation = .init(
+				let rotationRate: RotationRate = .init(
 					x: data.rotationRate.x,
 					y: data.rotationRate.y,
 					z: data.rotationRate.z
 				)
 				
-				continuation.resume(returning: rotation)
+				continuation.resume(returning: rotationRate)
 			}
 		}
 	}

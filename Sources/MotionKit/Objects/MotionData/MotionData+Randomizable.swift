@@ -11,10 +11,9 @@ extension MotionData {
 	/// - Returns: A random instance within the bounds of the range.
 	static func random(in range: ClosedRange<Double> = -1...1) -> Self {
 		return self.init(
-			timestamp: .zero,
 			acceleration: .random(),
 			magneticField: .random(),
-			rotation: .random()
+			rotationRate: .random()
 		)
 	}
 }
