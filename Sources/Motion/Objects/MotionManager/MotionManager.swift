@@ -21,21 +21,21 @@ public class MotionManager {
 	/// The shared instance.
 	public static let shared: MotionManager = .init()
 	
-	/// Subscribes to all the sensors.
-	///
-	/// - Parameter sensor: The sensor to subscribe to.
-	/// - Throws: A motion sensor error.
-	@available(iOS 15, macOS 12, watchOS 8, *)
-	public func subscribeToAll() async throws -> MotionData? {
-		guard let acceleration: Acceleration = try await self.subscribeToAccelerometer(),
-			  let magneticField: MagneticField = try await self.subscribeToMagnetometer(),
-			  let rotationRate: RotationRate = try await self.subscribeToGyrometer()
-		else {
-			return nil
-		}
-		
-		return .init(acceleration: acceleration, magneticField: magneticField, rotationRate: rotationRate)
-	}
+//	/// Subscribes to all the sensors.
+//	///
+//	/// - Parameter sensor: The sensor to subscribe to.
+//	/// - Throws: A motion sensor error.
+//	@available(iOS 15, macOS 12, watchOS 8, *)
+//	public func subscribeToAll() async throws -> MotionData? {
+//		guard let acceleration: Acceleration = try await self.subscribeToAccelerometer(),
+//			  let magneticField: MagneticField = try await self.subscribeToMagnetometer(),
+//			  let rotationRate: RotationRate = try await self.subscribeToGyrometer()
+//		else {
+//			return nil
+//		}
+//		
+//		return .init(acceleration: acceleration, magneticField: magneticField, rotationRate: rotationRate)
+//	}
 	
 	/// Unsubscribes from the specified sensor.
 	///
@@ -131,28 +131,28 @@ extension MotionManager {
 	///
 	/// - Throws: A motion sensor error.
 	@available(iOS 15, macOS 12, watchOS 8, *)
-	public func subscribeToAccelerometer() async throws -> Acceleration? {
+	public func subscribeToAccelerometer() throws -> AsyncStream<Acceleration> {
 		guard self.isAccelerometerAvailable else {
 			throw MotionSensorError.unavailable(.accelerometer)
 		}
 		
-		return await withCheckedContinuation { (continuation) in
+		return AsyncStream { (continuation) in
 			self.motionManager.startAccelerometerUpdates(to: OperationQueue()) { (data, _) in
-				guard let data = data else {
-					return continuation.resume(returning: nil)
+				if let data = data {
+					let acceleration: Acceleration = .init(
+						x: data.acceleration.x,
+						y: data.acceleration.y,
+						z: data.acceleration.z
+					)
+					
+					continuation.yield(acceleration)
+				} else {
+					continuation.finish()
 				}
-				
-				let acceleration: Acceleration = .init(
-					x: data.acceleration.x,
-					y: data.acceleration.y,
-					z: data.acceleration.z
-				)
-				
-				continuation.resume(returning: acceleration)
 			}
 		}
 	}
-	
+
 	/// Unsubscribes from the accelerometer.
 	///
 	/// - Throws: A motion sensor error.
