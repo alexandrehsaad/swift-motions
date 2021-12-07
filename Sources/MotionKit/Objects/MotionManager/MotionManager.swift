@@ -40,6 +40,17 @@ public class MotionManager: ObservableObject {
 		}
 	}
 	
+	/// Updates the specified sensors frequency.
+	///
+	/// - Parameters:
+	///   - sensors: The sensors to update.
+	///   - frequency: The new frequency.
+	public func update(_ sensors: Set<MotionSensor>, to frequency: Measure<Frequency>) {
+		for sensor in sensors {
+			self.update(sensor, to: frequency)
+		}
+	}
+	
 	/// Subscribes to the specified sensor.
 	///
 	/// - Parameter sensor: The sensor to subscribe to.
@@ -57,10 +68,20 @@ public class MotionManager: ObservableObject {
 		}
 	}
 	
-	/// Unsubscribes from the specified sensor to stop updates.
+	/// Subscribes to the specified sensors.
+	///
+	/// - Parameter sensors: The sensors to subscribe to.
+	/// - Throws: A motion sensor error.
+	public func subscribe(to sensors: Set<MotionSensor>) throws {
+		for sensor in sensors {
+			try self.subscribe(to: sensor)
+		}
+	}
+	
+	/// Unsubscribes from the specified sensor.
 	///
 	/// - Parameter sensor: The sensor to unsubscribe from.
-	/// - Throws: A motion error.
+	/// - Throws: A motion sensor error.
 	public func unsubscribe(from sensor: MotionSensor) throws {
 		switch sensor {
 		case .accelerometer:
@@ -71,6 +92,16 @@ public class MotionManager: ObservableObject {
 			
 		case .magnetometer:
 			try self.unsubscribeFromMagnetometer()
+		}
+	}
+	
+	/// Unsubscribes from the specified sensors.
+	///
+	/// - Parameter sensors: The sensors to unsubscribe from.
+	/// - Throws: A motion sensor error.
+	public func unsubscribe(from sensors: Set<MotionSensor>) throws {
+		for sensor in sensors {
+			try self.unsubscribe(from: sensor)
 		}
 	}
 }
