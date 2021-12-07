@@ -9,16 +9,16 @@ import Measures
 
 /// A structure containing 3-axis acceleration values.
 public struct Acceleration: Equatable, Hashable, Sendable {
-	/// X-axis acceleration in gravitational force.
+	/// The value for the X-axis acceleration in gravitational force.
 	public let x: Measure<Force>
 	
-	/// Y-axis acceleration in gravitational force.
+	/// The value for the Y-axis acceleration in gravitational force.
 	public let y: Measure<Force>
 	
-	/// Z-axis acceleration in gravitational force.
+	/// The value for the Z-axis acceleration in gravitational force.
 	public let z: Measure<Force>
 	
-	/// Creates a new instance with the specified x, y and z axes in gravitational force.
+	/// Creates a new instance with the specified axes in gravitational force.
 	///
 	/// - Parameters:
 	///   - x: The X-axis.

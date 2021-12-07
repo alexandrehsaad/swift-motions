@@ -15,7 +15,7 @@ public struct Rotation: Equatable, Hashable, Sendable {
 	/// The value for the Z-axis.
 	public let z: Double
 	
-	/// Creates a new instance with the specified x, y and z axes.
+	/// Creates a new instance with the specified axes.
 	///
 	/// - Parameters:
 	///   - x: The X-axis.
