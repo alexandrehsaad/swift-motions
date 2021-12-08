@@ -21,7 +21,7 @@ public class MotionManager {
 	/// The shared instance.
 	public static let shared: MotionManager = .init()
 	
-	// MARK: - Are sensors active
+	// MARK: - Get sensors activity
 	
 	/// A boolean value indicating whether the accelerometer is active.
 	public var isAccelerometerActive: Bool {
@@ -52,7 +52,7 @@ public class MotionManager {
 			|| self.motionManager.isDeviceMotionActive
 	}
 	
-	// MARK: - Are sensors available
+	// MARK: - Get sensors availability
 	
 	/// A boolean value indicating whether the accelerometer is available.
 	public var isAccelerometerAvailable: Bool {
@@ -108,47 +108,6 @@ public class MotionManager {
 		return .init(value, .hertz)
 	}
 	
-	// MARK: - Get sensors latest sample of data
-	
-	/// The latest sample of data from the accelerometer.
-	public var lastAcceleration: Acceleration? {
-		guard let data = self.motionManager.accelerometerData else {
-			return nil
-		}
-		
-		return .init(
-			x: data.acceleration.x,
-			y: data.acceleration.y,
-			z: data.acceleration.z
-		)
-	}
-	
-	/// The latest sample of data from the gyrometer.
-	public var lastRotation: RotationRate? {
-		guard let data = self.motionManager.gyroData else {
-			return nil
-		}
-		
-		return .init(
-			x: data.rotationRate.x,
-			y: data.rotationRate.y,
-			z: data.rotationRate.z
-		)
-	}
-	
-	/// The latest sample of data from the magnetometer.
-	public var lastMagneticField: MagneticField? {
-		guard let data = self.motionManager.magnetometerData else {
-			return nil
-		}
-		
-		return .init(
-			x: data.magneticField.x,
-			y: data.magneticField.y,
-			z: data.magneticField.z
-		)
-	}
-	
 	// MARK: - Subscribe to sensors
 	
 	/// Subscribes to the accelerometer.
@@ -161,7 +120,7 @@ public class MotionManager {
 			throw MotionSensorError.unavailable(.accelerometer)
 		}
 		
-		guard self.isAccelerometerActive == false else {
+		guard self.isAccelerometerActive == false && self.areAllSensorsActive == false else {
 			throw MotionSensorError.unresubscribable(.accelerometer)
 		}
 		
@@ -192,7 +151,7 @@ public class MotionManager {
 			throw MotionSensorError.unavailable(.gyrometer)
 		}
 		
-		guard self.isGyrometerActive == false else {
+		guard self.isGyrometerActive == false && self.areAllSensorsActive == false else {
 			throw MotionSensorError.unresubscribable(.gyrometer)
 		}
 		
@@ -223,7 +182,7 @@ public class MotionManager {
 			throw MotionSensorError.unavailable(.magnetometer)
 		}
 		
-		guard self.isMagnetometerActive == false else {
+		guard self.isMagnetometerActive == false && self.areAllSensorsActive == false else {
 			throw MotionSensorError.unresubscribable(.magnetometer)
 		}
 		
@@ -374,7 +333,6 @@ public class MotionManager {
 			self.motionManager.stopDeviceMotionUpdates()
 		} else {
 			let allSensors: Set<MotionSensor> = .init(MotionSensor.allCases)
-			
 			try self.unsubscribe(from: allSensors)
 		}
 	}
@@ -445,7 +403,6 @@ public class MotionManager {
 	/// - Parameter frequency: The new frequency.
 	public func updateAllSensors(to frequency: Measure<Frequency>) {
 		let allSensors: Set<MotionSensor> = .init(MotionSensor.allCases)
-		
 		self.update(allSensors, to: frequency)
 	}
 }
