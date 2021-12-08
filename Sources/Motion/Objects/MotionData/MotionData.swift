@@ -5,7 +5,7 @@
 //
 
 ///
-public struct MotionData: Equatable, Hashable, Sendable {
+public struct MotionData: Codable, Equatable, Hashable, Sendable {
 	/// The acceleration.
 	public let acceleration: Acceleration
 	
