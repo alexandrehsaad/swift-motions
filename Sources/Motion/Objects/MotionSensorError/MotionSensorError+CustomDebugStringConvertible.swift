@@ -10,7 +10,11 @@ extension MotionSensorError: CustomDebugStringConvertible {
 		case .inactive(let sensor):
 			return "\(sensor.rawValue) is inactive"
 		case .unavailable(let sensor):
-			return "\(sensor.rawValue) is unavailable"
+			return "\(sensor?.rawValue ?? "A sensor") is unavailable"
+		case .unequalFrequencies:
+			return "Some frequencies are unequal"
+		case .unresubscribable(let sensor):
+			return "\(sensor?.rawValue ?? "A sensor") is unable to resubscribe."
 		}
 	}
 }
