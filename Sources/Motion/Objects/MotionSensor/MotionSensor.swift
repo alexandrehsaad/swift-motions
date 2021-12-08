@@ -5,7 +5,7 @@
 //
 
 /// A representation of a motion sensor.
-public enum MotionSensor: String {
+public enum MotionSensor: String, CaseIterable {
 	/// The accelerometer motion sensor.
 	case accelerometer
 	

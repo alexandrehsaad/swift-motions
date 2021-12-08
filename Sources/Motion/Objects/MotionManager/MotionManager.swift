@@ -48,6 +48,13 @@ public class MotionManager {
 		}
 	}
 	
+	/// Unsubscribes from all sensors.
+	public func unsubscribeAll() throws {
+		let allSensors: Set<MotionSensor> = Set(MotionSensor.allCases)
+		
+		try self.unsubscribe(from: allSensors)
+	}
+	
 	/// Updates the specified sensor frequency.
 	///
 	/// - Parameters:
@@ -75,6 +82,15 @@ public class MotionManager {
 		for sensor in sensors {
 			self.update(sensor, to: frequency)
 		}
+	}
+	
+	/// Updates all sensors frequency.
+	///
+	/// - Parameter frequency: The new frequency.
+	public func updateAll(to frequency: Measure<Frequency>) {
+		let allSensors: Set<MotionSensor> = Set(MotionSensor.allCases)
+		
+		self.update(allSensors, to: frequency)
 	}
 }
 
