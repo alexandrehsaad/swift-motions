@@ -210,6 +210,7 @@ public class MotionManager {
 			throw MotionSensorError.unavailable()
 		}
 		
+		// Block device motion updates.
 		guard self.areAnySensorsActive == false else {
 			throw MotionSensorError.unresubscribable()
 		}
@@ -341,31 +342,34 @@ public class MotionManager {
 	
 	/// Updates the accelerometer frequency.
 	private func updateAccelerometer(to frequency: Measure<Frequency>) {
-		self.motionManager.accelerometerUpdateInterval = frequency.converted(to: .second).value
+		let interval: Double = frequency.converted(to: .second).value
+		self.motionManager.accelerometerUpdateInterval = interval
 		
 		if self.areAllFrequenciesEqual {
 			// Update device motion frequency.
-			self.motionManager.deviceMotionUpdateInterval = frequency.converted(to: .second).value
+			self.motionManager.deviceMotionUpdateInterval = interval
 		}
 	}
 	
 	/// Updates the gyrometer frequency.
 	private func updateGyrometer(to frequency: Measure<Frequency>) {
-		self.motionManager.gyroUpdateInterval = frequency.converted(to: .second).value
+		let interval: Double = frequency.converted(to: .second).value
+		self.motionManager.gyroUpdateInterval = interval
 		
 		if self.areAllFrequenciesEqual {
 			// Update device motion frequency.
-			self.motionManager.deviceMotionUpdateInterval = frequency.converted(to: .second).value
+			self.motionManager.deviceMotionUpdateInterval = interval
 		}
 	}
 	
 	/// Updates the magnetometer frequency.
 	private func updateMagnetometer(to frequency: Measure<Frequency>) {
-		self.motionManager.magnetometerUpdateInterval = frequency.converted(to: .second).value
+		let interval: Double = frequency.converted(to: .second).value
+		self.motionManager.magnetometerUpdateInterval = interval
 		
 		if self.areAllFrequenciesEqual {
 			// Update device motion frequency.
-			self.motionManager.deviceMotionUpdateInterval = frequency.converted(to: .second).value
+			self.motionManager.deviceMotionUpdateInterval = interval
 		}
 	}
 	
