@@ -10,5 +10,11 @@ public enum MotionSensorError: Error {
 	case inactive(_ sensor: MotionSensor)
 	
 	/// The specified sensor is unavailable.
-	case unavailable(_ sensor: MotionSensor)
+	case unavailable(_ sensor: MotionSensor? = nil)
+	
+	/// The frequencies are unequal.
+	case unequalFrequencies
+	
+	/// The specified sensor is unable to resubscribe.
+	case unresubscribable(_ sensor: MotionSensor? = nil)
 }
