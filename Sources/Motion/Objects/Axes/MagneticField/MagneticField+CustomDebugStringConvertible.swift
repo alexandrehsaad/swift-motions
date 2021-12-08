@@ -1,5 +1,5 @@
 // MagneticField+CustomDebugStringConvertible.swift
-// MotionKit
+// Motion
 //
 // Copyright © 2021 A. H. de Quatre Ltd.
 // Licensed under Apache License v2.0 with Runtime Library Exception
