@@ -1,5 +1,5 @@
 // Acceleration+Addable.swift
-// MotionKit
+// Motion
 //
 // Copyright © 2021 A. H. de Quatre Ltd.
 //

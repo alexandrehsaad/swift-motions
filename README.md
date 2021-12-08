@@ -10,7 +10,7 @@ To use this package in a SwiftPM project:
 let package = Package(
     ...
     dependencies: [
-        .package(url: "https://github.com/alexandrehsaad/motion-kit.git", branch: "main")
+        .package(url: "https://github.com/alexandrehsaad/swift-motion.git", branch: "main")
     ],
     ...
 )
@@ -23,7 +23,7 @@ let package = Package(
     ...
     targets: [
         .target(name: "MyTarget", dependencies: [
-            .product(name: "MotionKit", package: "motion-kit")
+            .product(name: "Motion", package: "swift-motion")
         ]),
     ],
     ...
@@ -33,7 +33,7 @@ let package = Package(
 3. Import the package in your source code.
 
 ```swift
-import MotionKit
+import Motion
 ```
 
 ## Contribution
@@ -52,4 +52,4 @@ If you like our work, show your support by staring this repository.
 
 ## Feedback
 
-We would love to hear your thoughts or feedback on how we can improve Motion Kit!
+We would love to hear your thoughts or feedback on how we can improve Swift Motion!

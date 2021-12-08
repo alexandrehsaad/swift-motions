@@ -1,5 +1,5 @@
 // MagneticField.swift
-// MotionKit
+// Motion
 //
 // Copyright © 2021 Alexandre H. Saad
 //
