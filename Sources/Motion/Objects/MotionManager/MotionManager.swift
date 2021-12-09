@@ -6,12 +6,12 @@
 
 import Measures
 
-#if canImport(CoreMotion)
+#if !os(macOS) && canImport(CoreMotion)
 
 import CoreMotion
 
 /// A reprensentation of the motion manager.
-public class MotionManager {
+public final class MotionManager {
 	/// Creates a new instance.
 	private init() {}
 	
