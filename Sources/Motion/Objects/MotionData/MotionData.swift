@@ -6,6 +6,9 @@
 
 ///
 public struct MotionData: Codable, Equatable, Hashable, Sendable {
+	/// The source.
+	public let source: MotionDataSource
+	
 	/// The acceleration.
 	public let acceleration: Acceleration
 	
@@ -15,17 +18,20 @@ public struct MotionData: Codable, Equatable, Hashable, Sendable {
 	/// The rotation rate.
 	public let rotationRate: RotationRate
 	
-	/// Creates a new instance with the specified acceleration, magnetic field and rotation rate.
+	/// Creates a new instance with the specified source acceleration, magnetic field and rotation rate.
 	///
 	/// - Parameters:
+	///   - source: The source.
 	///   - acceleration: The acceleration.
 	///   - magneticField: The magnetic field.
 	///   - rotationRate: The rotation rate.
 	public init(
+		source: MotionDataSource,
 		acceleration: Acceleration,
 		magneticField: MagneticField,
 		rotationRate: RotationRate
 	) {
+		self.source = source
 		self.acceleration = acceleration
 		self.magneticField = magneticField
 		self.rotationRate = rotationRate
