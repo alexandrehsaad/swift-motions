@@ -8,7 +8,7 @@ import Arithmetics
 import Measures
 
 /// A structure containing 3-axis acceleration values.
-public struct Acceleration: Codable, Equatable, Hashable, Sendable {
+public struct Acceleration: Codable, Sendable {
 	/// The value for the X-axis in gravitational force.
 	public let x: Measure<Force>
 	

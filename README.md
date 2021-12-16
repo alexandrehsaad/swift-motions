@@ -1,4 +1,4 @@
-# motion-kit
+# swift-motion
 
 ## Installation
 
