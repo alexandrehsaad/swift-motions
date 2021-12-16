@@ -7,7 +7,7 @@
 import Measures
 
 /// A structure containing 3-axis magnetic field values.
-public struct MagneticField: Codable, Equatable, Hashable, Sendable {
+public struct MagneticField: Codable, Sendable {
 	/// The value for the X-axis in microteslas.
 	public let x: Measure<MagneticFluxDensity>
 	

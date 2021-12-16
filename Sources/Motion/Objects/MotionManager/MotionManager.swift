@@ -240,7 +240,7 @@ public final class MotionManager {
 						z: data.magneticField.field.z
 					)
 					
-					let data: MotionData = .init(acceleration: acceleration, magneticField: magneticField, rotationRate: rotationRate)
+					let data: MotionData = .init(source: .watch, acceleration: acceleration, magneticField: magneticField, rotationRate: rotationRate)
 					
 					continuation.yield(data)
 				} else {
