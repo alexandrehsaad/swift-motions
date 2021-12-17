@@ -4,8 +4,6 @@
 // Copyright © 2021 Alexandre H. Saad
 //
 
-import Measures
-
 #if !os(macOS) && canImport(CoreMotion)
 
 import CoreMotion
