@@ -4,18 +4,16 @@
 // Copyright © 2021 Alexandre H. Saad
 //
 
-import Arithmetics
-
-extension Acceleration {
-	/// Returns a random instance within the specified range.
-	///
-	/// - Parameter range: The range in which to create a random value.
-	/// - Returns: A random instance within the bounds of the range.
-	public static func random(in range: ClosedRange<Double> = -1...1) -> Self {
+extension Acceleration: Randomizable {
+	public static func random(in range: ClosedRange<Self>) -> Self {
+		let rangeX: ClosedRange<Self.Unit> = range.lowerBound.x...range.upperBound.x
+		let rangeY: ClosedRange<Self.Unit> = range.lowerBound.y...range.upperBound.y
+		let rangeZ: ClosedRange<Self.Unit> = range.lowerBound.z...range.upperBound.z
+		
 		return self.init(
-			x: .random(in: range),
-			y: .random(in: range),
-			z: .random(in: range)
+			x: .random(in: rangeX),
+			y: .random(in: rangeY),
+			z: .random(in: rangeZ)
 		)
 	}
 }

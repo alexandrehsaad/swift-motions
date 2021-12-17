@@ -5,7 +5,7 @@
 //
 
 /// A structure representing a measurement of rotation rate.
-public struct RotationRate: Codable, Sendable {
+public struct RotationRate {
 	/// The value for the X-axis.
 	public let x: Double
 	
