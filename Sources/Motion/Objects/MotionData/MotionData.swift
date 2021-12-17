@@ -5,7 +5,7 @@
 //
 
 ///
-public struct MotionData: Codable, Sendable {
+public struct MotionData: Codable {
 	/// The source.
 	public let source: MotionDataSource
 	
