@@ -8,10 +8,10 @@ let package = Package(
     products: [
         .library(name: "Motion", targets: ["Motion"])
     ], dependencies: [
-		.package(name: "swift-measures", url: "https://github.com/alexandrehsaad/swift-measures", branch: "main")
+		.package(name: "swift-extensions", url: "https://github.com/alexandrehsaad/swift-extensions", branch: "main")
 	], targets: [
 		.target(name: "Motion", dependencies: [
-			.product(name: "Measures", package: "swift-measures"),
+			.product(name: "Extensions", package: "swift-extensions"),
 		]),
     ], swiftLanguageVersions: [.version("5.5")]
 )

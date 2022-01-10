@@ -10,6 +10,9 @@ import CoreMotion
 
 /// A reprensentation of the motion manager.
 public final class MotionManager {
+	
+	// MARK: - Creating Instances
+	
 	/// Creates a new instance.
 	private init() {}
 	
@@ -19,7 +22,7 @@ public final class MotionManager {
 	/// The shared instance.
 	public static let shared: MotionManager = .init()
 	
-	// MARK: - Get sensors activity
+	// MARK: - Sensors Activities
 	
 	/// A boolean value indicating whether the accelerometer is active.
 	public var isAccelerometerActive: Bool {
@@ -50,7 +53,7 @@ public final class MotionManager {
 			|| self.motionManager.isDeviceMotionActive
 	}
 	
-	// MARK: - Get sensors availability
+	// MARK: - Sensors Availabilities
 	
 	/// A boolean value indicating whether the accelerometer is available.
 	public var isAccelerometerAvailable: Bool {
@@ -72,7 +75,7 @@ public final class MotionManager {
 		return self.motionManager.isDeviceMotionAvailable
 	}
 	
-	// MARK: - Get sensors frequency
+	// MARK: - Sensors Frequencies
 	
 	/// A boolean value indicating whether all frequencies are equal.
 	private var areAllFrequenciesEqual: Bool {
@@ -106,7 +109,7 @@ public final class MotionManager {
 		return .init(value, .hertz)
 	}
 	
-	// MARK: - Subscribe to sensors
+	// MARK: - Subscribing Sensors
 	
 	/// Subscribes to the accelerometer.
 	///
@@ -248,7 +251,7 @@ public final class MotionManager {
 		}
 	}
 	
-	// MARK: - Unsubscribe from sensors
+	// MARK: - Unsubscribing Sensors
 	
 	/// Unsubscribes from the accelerometer.
 	///
@@ -336,7 +339,7 @@ public final class MotionManager {
 		}
 	}
 	
-	// MARK: - Update sensors frequency
+	// MARK: - Updating Frequencies
 	
 	/// Updates the accelerometer frequency.
 	private func updateAccelerometer(to frequency: Measure<Frequency>) {

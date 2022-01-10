@@ -8,7 +8,7 @@
 public enum MotionDataSource: Codable, Sendable {
 	/// Recordings from earbuds.
 	@available(*, unavailable)
-	case bud
+	case buds
 	
 	/// Recordings from the iPad.
 	@available(*, unavailable)
