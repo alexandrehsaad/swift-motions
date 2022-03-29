@@ -6,17 +6,8 @@
 
 ///
 public struct MotionData {
-	/// The source.
-	public let source: MotionDataSource
 	
-	/// The acceleration.
-	public let acceleration: Acceleration
-	
-	/// The magnetic field.
-	public let magneticField: MagneticField
-	
-	/// The rotation rate.
-	public let rotationRate: RotationRate
+	// MARK: - Creating Instances
 	
 	/// Creates a new instance with the specified source acceleration, magnetic field and rotation rate.
 	///
@@ -36,4 +27,18 @@ public struct MotionData {
 		self.magneticField = magneticField
 		self.rotationRate = rotationRate
 	}
+	
+	// MARK: - Instance Properties
+	
+	/// The source.
+	public let source: MotionDataSource
+	
+	/// The acceleration.
+	public let acceleration: Acceleration
+	
+	/// The magnetic field.
+	public let magneticField: MagneticField
+	
+	/// The rotation rate.
+	public let rotationRate: RotationRate
 }
