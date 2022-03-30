@@ -5,3 +5,7 @@
 //
 
 @_exported import Extensions
+
+#if canImport(CoreMotion)
+@_exported import CoreMotion
+#endif

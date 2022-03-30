@@ -22,6 +22,50 @@ public final class MotionManager {
 	/// The shared instance.
 	public static let shared: MotionManager = .init()
 	
+	// MARK: - Sensors Authorizations
+	
+	// TODO: test
+	/// A boolean value indicating whether the user has authorized to be recorded.
+	@available(*, unavailable)
+	public var isRecordingAuthorized: MotionManagerAuthorizationStatus {
+		let status: CMAuthorizationStatus = CMSensorRecorder.authorizationStatus()
+		
+		switch status {
+		case .notDetermined:
+			return .undetermined
+		case .restricted:
+			return .restricted
+		case .denied:
+			return .denied
+		case .authorized:
+			return .authorized
+		@unknown default:
+			fatalError()
+		}
+	}
+	
+	// MARK: - Sensors Availabilities
+	
+	/// A boolean value indicating whether the accelerometer is available.
+	public var isAccelerometerAvailable: Bool {
+		return self.motionManager.isAccelerometerAvailable
+	}
+	
+	/// A boolean value indicating whether the gyrometer is available.
+	public var isGyrometerAvailable: Bool {
+		return self.motionManager.isGyroAvailable
+	}
+	
+	/// A boolean value indicating whether the magnetometer is available.
+	public var isMagnetometerAvailable: Bool {
+		return self.motionManager.isMagnetometerAvailable
+	}
+	
+	/// A boolean value indicating whether all sensors are available.
+	public var areAllSensorsAvailable: Bool {
+		return self.motionManager.isDeviceMotionAvailable
+	}
+	
 	// MARK: - Sensors Activities
 	
 	/// A boolean value indicating whether the accelerometer is active.
@@ -51,28 +95,6 @@ public final class MotionManager {
 			|| self.isGyrometerActive
 			|| self.isMagnetometerActive
 			|| self.motionManager.isDeviceMotionActive
-	}
-	
-	// MARK: - Sensors Availabilities
-	
-	/// A boolean value indicating whether the accelerometer is available.
-	public var isAccelerometerAvailable: Bool {
-		return self.motionManager.isAccelerometerAvailable
-	}
-	
-	/// A boolean value indicating whether the gyrometer is available.
-	public var isGyrometerAvailable: Bool {
-		return self.motionManager.isGyroAvailable
-	}
-	
-	/// A boolean value indicating whether the magnetometer is available.
-	public var isMagnetometerAvailable: Bool {
-		return self.motionManager.isMagnetometerAvailable
-	}
-	
-	/// A boolean value indicating whether all sensors are available.
-	public var areAllSensorsAvailable: Bool {
-		return self.motionManager.isDeviceMotionAvailable
 	}
 	
 	// MARK: - Sensors Frequencies
@@ -256,7 +278,7 @@ public final class MotionManager {
 	/// Unsubscribes from the accelerometer.
 	///
 	/// - Throws: A motion sensor error.
-	private func unsubscribeFromAccelerometer() throws {
+	public func unsubscribeFromAccelerometer() throws {
 		if self.motionManager.isDeviceMotionActive {
 			// Stop device motion updates.
 			self.motionManager.stopDeviceMotionUpdates()
@@ -272,7 +294,7 @@ public final class MotionManager {
 	/// Unsubscribes from the gyrometer.
 	///
 	/// - Throws: A motion sensor error.
-	private func unsubscribeFromGyrometer() throws {
+	public func unsubscribeFromGyrometer() throws {
 		if self.motionManager.isDeviceMotionActive {
 			// Stop device motion updates.
 			self.motionManager.stopDeviceMotionUpdates()
@@ -288,7 +310,7 @@ public final class MotionManager {
 	/// Unsubscribes from the magnetometer.
 	///
 	/// - Throws: A motion sensor error.
-	private func unsubscribeFromMagnetometer() throws {
+	public func unsubscribeFromMagnetometer() throws {
 		if self.motionManager.isDeviceMotionActive {
 			// Stop device motion updates.
 			self.motionManager.stopDeviceMotionUpdates()
@@ -305,7 +327,7 @@ public final class MotionManager {
 	///
 	/// - Parameter sensor: The sensor to unsubscribe from.
 	/// - Throws: A motion sensor error.
-	public func unsubscribe(from sensor: MotionSensor) throws {
+	private func unsubscribe(from sensor: MotionSensor) throws {
 		switch sensor {
 		case .accelerometer:
 			try self.unsubscribeFromAccelerometer()
@@ -342,7 +364,7 @@ public final class MotionManager {
 	// MARK: - Updating Frequencies
 	
 	/// Updates the accelerometer frequency.
-	private func updateAccelerometer(to frequency: Measure<Frequency>) {
+	public func updateAccelerometer(to frequency: Measure<Frequency>) {
 		let interval: Double = frequency.converted(to: .second).value
 		self.motionManager.accelerometerUpdateInterval = interval
 		
@@ -353,7 +375,7 @@ public final class MotionManager {
 	}
 	
 	/// Updates the gyrometer frequency.
-	private func updateGyrometer(to frequency: Measure<Frequency>) {
+	public func updateGyrometer(to frequency: Measure<Frequency>) {
 		let interval: Double = frequency.converted(to: .second).value
 		self.motionManager.gyroUpdateInterval = interval
 		
@@ -364,7 +386,7 @@ public final class MotionManager {
 	}
 	
 	/// Updates the magnetometer frequency.
-	private func updateMagnetometer(to frequency: Measure<Frequency>) {
+	public func updateMagnetometer(to frequency: Measure<Frequency>) {
 		let interval: Double = frequency.converted(to: .second).value
 		self.motionManager.magnetometerUpdateInterval = interval
 		
@@ -376,10 +398,9 @@ public final class MotionManager {
 	
 	/// Updates the specified sensor frequency.
 	///
-	/// - Parameters:
-	///   - sensor: The sensor to update.
-	///   - frequency: The new frequency.
-	public func update(_ sensor: MotionSensor, to frequency: Measure<Frequency>) {
+	/// - Parameter sensor: The sensor to update.
+	/// - Parameter frequency: The new frequency.
+	private func update(_ sensor: MotionSensor, to frequency: Measure<Frequency>) {
 		switch sensor {
 		case .accelerometer:
 			self.updateAccelerometer(to: frequency)
@@ -394,9 +415,8 @@ public final class MotionManager {
 	
 	/// Updates the specified sensors frequency.
 	///
-	/// - Parameters:
-	///   - sensors: The sensors to update.
-	///   - frequency: The new frequency.
+	/// - Parameter sensors: The sensors to update.
+	/// - Parameter frequency: The new frequency.
 	private func update(_ sensors: Set<MotionSensor>, to frequency: Measure<Frequency>) {
 		for sensor in sensors {
 			self.update(sensor, to: frequency)

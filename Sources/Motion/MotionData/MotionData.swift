@@ -11,13 +11,12 @@ public struct MotionData {
 	
 	/// Creates a new instance with the specified source acceleration, magnetic field and rotation rate.
 	///
-	/// - Parameters:
-	///   - source: The source.
-	///   - acceleration: The acceleration.
-	///   - magneticField: The magnetic field.
-	///   - rotationRate: The rotation rate.
+	/// - Parameter source: The source.
+	/// - Parameter acceleration: The acceleration.
+	/// - Parameter magneticField: The magnetic field.
+	/// - Parameter rotationRate: The rotation rate.
 	public init(
-		source: MotionDataSource,
+		source: MotionManagerDataSource,
 		acceleration: Acceleration,
 		magneticField: MagneticField,
 		rotationRate: RotationRate
@@ -31,7 +30,7 @@ public struct MotionData {
 	// MARK: - Instance Properties
 	
 	/// The source.
-	public let source: MotionDataSource
+	public let source: MotionManagerDataSource
 	
 	/// The acceleration.
 	public let acceleration: Acceleration

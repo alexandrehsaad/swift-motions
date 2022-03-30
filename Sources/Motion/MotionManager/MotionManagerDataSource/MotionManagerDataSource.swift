@@ -1,11 +1,14 @@
-// MotionDataSource.swift
+// MotionManagerDataSource.swift
 // Motion
 //
 // Copyright © 2021 Alexandre H. Saad
 //
 
-/// A representation of a motion data source.
-public enum MotionDataSource: Codable, Sendable {
+/// A representation of a motion manager data source.
+public enum MotionManagerDataSource: Codable {
+	/// Recordings from a simulator.
+	case simulator
+	
 	/// Recordings from earbuds.
 	@available(*, unavailable)
 	case buds
@@ -23,7 +26,9 @@ public enum MotionDataSource: Codable, Sendable {
 	#if !os(macOS)
 	/// The current source.
 	static var current: Self {
-		#if os(iOS)
+		#if targetEnvironment(simulator)
+		return .simulator
+		#elseif os(iOS)
 		return .phone
 		#elseif os(watchOS)
 		return .watch
