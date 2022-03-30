@@ -9,7 +9,6 @@ extension MotionData: Encodable {
 	public func encode(to encoder: Encoder) throws {
 		var container = encoder.container(keyedBy: Self.MotionDataCodingKeys.self)
 		
-		try container.encode(self.source, forKey: .source)
 		try container.encode(self.acceleration, forKey: .acceleration)
 		try container.encode(self.magneticField, forKey: .magneticField)
 		try container.encode(self.rotationRate, forKey: .rotationRate)
