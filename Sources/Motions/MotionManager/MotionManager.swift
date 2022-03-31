@@ -27,21 +27,9 @@ public final class MotionManager {
 	// TODO: test
 	/// A boolean value indicating whether the user has authorized to be recorded.
 	@available(*, unavailable)
-	public var isRecordingAuthorized: MotionManagerAuthorizationStatus {
-		let status: CMAuthorizationStatus = CMSensorRecorder.authorizationStatus()
-		
-		switch status {
-		case .notDetermined:
-			return .undetermined
-		case .restricted:
-			return .restricted
-		case .denied:
-			return .denied
-		case .authorized:
-			return .authorized
-		@unknown default:
-			fatalError()
-		}
+	@available(iOS 14, macOS 11, watchOS 7, *)
+	public var isRecordingAuthorized: AuthorizationStatus {
+		return CMSensorRecorder.authorizationStatus().clone
 	}
 	
 	// MARK: - Sensors Availabilities
@@ -148,10 +136,10 @@ public final class MotionManager {
 		}
 		
 		return AsyncStream { (continuation) in
-			self.motionManager.startAccelerometerUpdates(to: .init()) { (data, error) in
-				guard let data: CMAcceleration = data else {
+			self.motionManager.startAccelerometerUpdates(to: .init()) { (data, _) in
+				guard let data: CMAccelerometerData = data else {
 					continuation.finish()
-					throw error
+					return
 				}
 				
 				let acceleration: Acceleration = .init(
@@ -180,10 +168,10 @@ public final class MotionManager {
 		}
 		
 		return AsyncStream { (continuation) in
-			self.motionManager.startGyroUpdates(to: .init()) { (data, error) in
+			self.motionManager.startGyroUpdates(to: .init()) { (data, _) in
 				guard let data: CMGyroData = data else {
 					continuation.finish()
-					throw error
+					return
 				}
 				
 				let rotationRate: RotationRate = .init(
@@ -212,10 +200,10 @@ public final class MotionManager {
 		}
 		
 		return AsyncStream { (continuation) in
-			self.motionManager.startMagnetometerUpdates(to: .init()) { (data, error) in
-				guard let data: CMRotationRateData = data else {
+			self.motionManager.startMagnetometerUpdates(to: .init()) { (data, _) in
+				guard let data: CMMagnetometerData = data else {
 					continuation.finish()
-					throw error
+					return
 				}
 				
 				let magneticField: MagneticField = .init(
@@ -246,10 +234,10 @@ public final class MotionManager {
 		}
 
 		return AsyncStream { (continuation) in
-			self.motionManager.startDeviceMotionUpdates(using: .xArbitraryZVertical, to: .init()) { (data, error) in
-				guard let data = data else {
+			self.motionManager.startDeviceMotionUpdates(using: .xArbitraryZVertical, to: .init()) { (data, _) in
+				guard let data: CMDeviceMotion = data else {
 					continuation.finish()
-					throw error
+					return
 				}
 				
 				let acceleration: Acceleration = .init(
@@ -270,9 +258,13 @@ public final class MotionManager {
 					z: data.magneticField.field.z
 				)
 				
-				let data: MotionData = .init(acceleration: acceleration, magneticField: magneticField, rotationRate: rotationRate)
+				let motion: MotionData = .init(
+					acceleration: acceleration,
+					magneticField: magneticField,
+					rotationRate: rotationRate
+				)
 				
-				continuation.yield(data)
+				continuation.yield(motion)
 			}
 		}
 	}
