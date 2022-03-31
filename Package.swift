@@ -3,14 +3,14 @@
 import PackageDescription
 
 let package = Package(
-    name: "swift-motion",
+    name: "swift-motions",
     defaultLocalization: "en",
     products: [
-        .library(name: "Motion", targets: ["Motion"])
+        .library(name: "Motions", targets: ["Motions"])
     ], dependencies: [
 		.package(url: "https://github.com/alexandrehsaad/swift-extensions", branch: "main")
 	], targets: [
-		.target(name: "Motion", dependencies: [
+		.target(name: "Motions", dependencies: [
 			.product(name: "Extensions", package: "swift-extensions"),
 		]),
 	], swiftLanguageVersions: [.v5]
