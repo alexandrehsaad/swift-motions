@@ -1,12 +1,12 @@
 // MotionData+Decodable.swift
-// Extensions
+// Motions
 //
 // Copyright © 2021 Alexandre H. Saad
 // Licensed under Apache License v2.0 with Runtime Library Exception
 //
 
 extension MotionData: Decodable {
-	public init(from decoder: Decoder) throws {
+	internal init(from decoder: Decoder) throws {
 		let container = try decoder.container(keyedBy: Self.MotionDataCodingKeys.self)
 		
 		let acceleration: Acceleration = try container.decode(Acceleration.self, forKey: .acceleration)

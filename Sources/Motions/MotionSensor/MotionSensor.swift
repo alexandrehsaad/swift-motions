@@ -1,5 +1,5 @@
 // MotionSensor.swift
-// Motion
+// Motions
 //
 // Copyright © 2021 Alexandre H. Saad
 //

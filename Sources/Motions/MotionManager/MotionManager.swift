@@ -9,47 +9,20 @@
 import CoreMotion
 
 /// A reprensentation of the motion manager.
+@available(iOS 13, macCatalyst 15, macOS 10.5, watchOS 6, *)
 public final class MotionManager {
+	/// The underlying motion manager from Apple's CoreMotion framework.
+	private let motionManager: CMMotionManager = .init()
 	
 	// MARK: - Creating Instances
 	
 	/// Creates a new instance.
 	private init() {}
 	
-	/// The underlying motion manager from Apple's CoreMotion framework.
-	private let motionManager: CMMotionManager = .init()
-	
 	/// The shared instance.
 	public static let shared: MotionManager = .init()
 	
-	// MARK: - Sensors Authorizations
-	
-	///
-	public var authorizationStatus: AuthorizationStatus {
-		if #available(iOS 11, macCatalyst 13.1, watchOS 4, *) {
-			return CMSensorRecorder.authorizationStatus().clone
-		} else {
-			let status: Bool = CMSensorRecorder.isAuthorizedForRecording()
-			
-			switch status {
-			case true:
-				return .authorized
-			case false:
-				return .unknown
-			}
-		}
-	}
-	
-	/// A boolean value indicating whether the user has authorized to be recorded.
-	public var isRecordingAuthorized: Bool {
-		if #available(iOS 11, macCatalyst 13.1, watchOS 4, *) {
-			return self.authorizationStatus.isAuthorized
-		} else {
-			return CMSensorRecorder.isAuthorizedForRecording()
-		}
-	}
-	
-	// MARK: - Sensors Availabilities
+	// MARK: -
 	
 	/// A boolean value indicating whether the accelerometer is available.
 	public var isAccelerometerAvailable: Bool {
@@ -71,7 +44,19 @@ public final class MotionManager {
 		return self.motionManager.isDeviceMotionAvailable
 	}
 	
-	// MARK: - Sensors Activities
+	// MARK: - Requesting Authorizations
+	
+	/// The app’s authorization status for using motion services.
+	public var authorizationStatus: AuthorizationStatus {
+		return CMSensorRecorder.authorizationStatus().clone
+	}
+	
+	/// A boolean value indicating whether the user has authorized to share his motion.
+	public var isAuthorizedToRecord: Bool {
+		return self.authorizationStatus.isAuthorized
+	}
+	
+	// MARK: -
 	
 	/// A boolean value indicating whether the accelerometer is active.
 	public var isAccelerometerActive: Bool {
@@ -102,47 +87,12 @@ public final class MotionManager {
 			|| self.motionManager.isDeviceMotionActive
 	}
 	
-	// MARK: - Sensors Frequencies
-	
-	/// A boolean value indicating whether all frequencies are equal.
-	private var areAllFrequenciesEqual: Bool {
-		let frequencies: [Measure<Frequency>] = [
-			self.accelerometerFrequency,
-			self.gyrometerFrequency,
-			self.magnetometerFrequency
-		]
-		
-		return frequencies.areEqual
-	}
-	
-	/// The cycles per second at which to deliver accelerometer data.
-	public var accelerometerFrequency: Measure<Frequency> {
-		let value: Double = self.motionManager.accelerometerUpdateInterval
-		
-		return .init(value, .hertz)
-	}
-	
-	/// The cycles per second at which to deliver gyrometer data.
-	public var gyrometerFrequency: Measure<Frequency> {
-		let value: Double = self.motionManager.gyroUpdateInterval
-		
-		return .init(value, .hertz)
-	}
-	
-	/// The cycles per second at which to deliver magnetometer data.
-	public var magnetometerFrequency: Measure<Frequency> {
-		let value: Double = self.motionManager.magnetometerUpdateInterval
-		
-		return .init(value, .hertz)
-	}
-	
-	// MARK: - Subscribing to Sensors
+	// MARK: - Subscribing to Streams
 	
 	/// Subscribes to the accelerometer.
 	///
-	/// - Returns: An asynchronous stream of data from the accelerometer.
-	/// - Throws: A motion sensor error.
-	@available(iOS 13, macCatalyst 15, macOS 12, watchOS 8, *)
+	/// - throws: A motion sensor error.
+	/// - returns: An asynchronous stream of data from the accelerometer.
 	public func subscribeToAccelerometer() throws -> AsyncStream<Acceleration> {
 		guard self.isAccelerometerAvailable else {
 			throw MotionSensorError.unavailable(.accelerometer)
@@ -172,9 +122,8 @@ public final class MotionManager {
 	
 	/// Subscribes to the gyrometer.
 	///
-	/// - Returns: An asynchronous stream of data from the gyrometer.
-	/// - Throws: A motion sensor error.
-	@available(iOS 15, macCatalyst 15, macOS 12, watchOS 8, *)
+	/// - throws: A motion sensor error.
+	/// - returns: An asynchronous stream of data from the gyrometer.
 	public func subscribeToGyrometer() throws -> AsyncStream<RotationRate> {
 		guard self.isGyrometerAvailable else {
 			throw MotionSensorError.unavailable(.gyrometer)
@@ -204,9 +153,8 @@ public final class MotionManager {
 	
 	/// Subscribes to the magnetometer.
 	///
-	/// - Returns: An asynchronous stream of data from the magnetometer.
-	/// - Throws: A motion sensor error.
-	@available(iOS 15, macCatalyst 15, macOS 12, watchOS 8, *)
+	/// - throws: A motion sensor error.
+	/// - returns: An asynchronous stream of data from the magnetometer.
 	public func subscribeToMagnetometer() throws -> AsyncStream<MagneticField> {
 		guard self.isMagnetometerAvailable else {
 			throw MotionSensorError.unavailable(.magnetometer)
@@ -235,8 +183,10 @@ public final class MotionManager {
 	}
 	
 	/// Subscribes to all sensors.
-	@available(iOS 15, macCatalyst 15, macOS 12, watchOS 8, *)
-	public func subscribeToAllSensors() throws -> AsyncStream<MotionData> {
+	///
+	/// - throws: A motion sensor error.
+	/// - returns: A motion sensor error.
+	internal func subscribeToAllSensors() throws -> AsyncStream<MotionData> {
 		guard self.areAllSensorsAvailable else {
 			throw MotionSensorError.unavailable()
 		}
@@ -286,11 +236,11 @@ public final class MotionManager {
 		}
 	}
 	
-	// MARK: - Unsubscribing from Sensors
+	// MARK: - Unsubscribing from Streams
 	
 	/// Unsubscribes from the accelerometer.
 	///
-	/// - Throws: A motion sensor error.
+	/// - throws: A motion sensor error.
 	public func unsubscribeFromAccelerometer() {
 		if self.motionManager.isDeviceMotionActive {
 			// Stop device motion updates.
@@ -302,7 +252,7 @@ public final class MotionManager {
 	
 	/// Unsubscribes from the gyrometer.
 	///
-	/// - Throws: A motion sensor error.
+	/// - throws: A motion sensor error.
 	public func unsubscribeFromGyrometer() {
 		if self.motionManager.isDeviceMotionActive {
 			// Stop device motion updates.
@@ -314,7 +264,7 @@ public final class MotionManager {
 	
 	/// Unsubscribes from the magnetometer.
 	///
-	/// - Throws: A motion sensor error.
+	/// - throws: A motion sensor error.
 	public func unsubscribeFromMagnetometer() {
 		if self.motionManager.isDeviceMotionActive {
 			// Stop device motion updates.
@@ -334,6 +284,40 @@ public final class MotionManager {
 			self.unsubscribeFromGyrometer()
 			self.unsubscribeFromMagnetometer()
 		}
+	}
+	
+	// MARK: - Sensors Frequencies
+	
+	/// A boolean value indicating whether all frequencies are equal.
+	private var areAllFrequenciesEqual: Bool {
+		let frequencies: [Measure<Frequency>] = [
+			self.accelerometerFrequency,
+			self.gyrometerFrequency,
+			self.magnetometerFrequency
+		]
+		
+		return frequencies.areEqual
+	}
+	
+	/// The cycles per second at which to deliver accelerometer data.
+	public var accelerometerFrequency: Measure<Frequency> {
+		let value: Double = self.motionManager.accelerometerUpdateInterval
+		
+		return .init(value, .hertz)
+	}
+	
+	/// The cycles per second at which to deliver gyrometer data.
+	public var gyrometerFrequency: Measure<Frequency> {
+		let value: Double = self.motionManager.gyroUpdateInterval
+		
+		return .init(value, .hertz)
+	}
+	
+	/// The cycles per second at which to deliver magnetometer data.
+	public var magnetometerFrequency: Measure<Frequency> {
+		let value: Double = self.motionManager.magnetometerUpdateInterval
+		
+		return .init(value, .hertz)
 	}
 	
 	// MARK: - Updating Frequencies
