@@ -24,12 +24,29 @@ public final class MotionManager {
 	
 	// MARK: - Sensors Authorizations
 	
-	// TODO: test
+	///
+	public var authorizationStatus: AuthorizationStatus {
+		if #available(iOS 11, macCatalyst 13.1, watchOS 4, *) {
+			return CMSensorRecorder.authorizationStatus().clone
+		} else {
+			let status: Bool = CMSensorRecorder.isAuthorizedForRecording()
+			
+			switch status {
+			case true:
+				return .authorized
+			case false:
+				return .unknown
+			}
+		}
+	}
+	
 	/// A boolean value indicating whether the user has authorized to be recorded.
-	@available(*, unavailable)
-	@available(iOS 14, macOS 11, watchOS 7, *)
-	public var isRecordingAuthorized: AuthorizationStatus {
-		return CMSensorRecorder.authorizationStatus().clone
+	public var isRecordingAuthorized: Bool {
+		if #available(iOS 11, macCatalyst 13.1, watchOS 4, *) {
+			return self.authorizationStatus.isAuthorized
+		} else {
+			return CMSensorRecorder.isAuthorizedForRecording()
+		}
 	}
 	
 	// MARK: - Sensors Availabilities
@@ -125,7 +142,7 @@ public final class MotionManager {
 	///
 	/// - Returns: An asynchronous stream of data from the accelerometer.
 	/// - Throws: A motion sensor error.
-	@available(iOS 15, macOS 12, watchOS 8, *)
+	@available(iOS 13, macCatalyst 15, macOS 12, watchOS 8, *)
 	public func subscribeToAccelerometer() throws -> AsyncStream<Acceleration> {
 		guard self.isAccelerometerAvailable else {
 			throw MotionSensorError.unavailable(.accelerometer)
@@ -157,7 +174,7 @@ public final class MotionManager {
 	///
 	/// - Returns: An asynchronous stream of data from the gyrometer.
 	/// - Throws: A motion sensor error.
-	@available(iOS 15, macOS 12, watchOS 8, *)
+	@available(iOS 15, macCatalyst 15, macOS 12, watchOS 8, *)
 	public func subscribeToGyrometer() throws -> AsyncStream<RotationRate> {
 		guard self.isGyrometerAvailable else {
 			throw MotionSensorError.unavailable(.gyrometer)
@@ -189,7 +206,7 @@ public final class MotionManager {
 	///
 	/// - Returns: An asynchronous stream of data from the magnetometer.
 	/// - Throws: A motion sensor error.
-	@available(iOS 15, macOS 12, watchOS 8, *)
+	@available(iOS 15, macCatalyst 15, macOS 12, watchOS 8, *)
 	public func subscribeToMagnetometer() throws -> AsyncStream<MagneticField> {
 		guard self.isMagnetometerAvailable else {
 			throw MotionSensorError.unavailable(.magnetometer)
@@ -218,7 +235,7 @@ public final class MotionManager {
 	}
 	
 	/// Subscribes to all sensors.
-	@available(iOS 15, macOS 12, watchOS 8, *)
+	@available(iOS 15, macCatalyst 15, macOS 12, watchOS 8, *)
 	public func subscribeToAllSensors() throws -> AsyncStream<MotionData> {
 		guard self.areAllSensorsAvailable else {
 			throw MotionSensorError.unavailable()
