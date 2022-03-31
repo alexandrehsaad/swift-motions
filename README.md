@@ -1,46 +1,12 @@
-# swift-motion
+# swift-motions
 
-## Installation
-
-To use this package in a SwiftPM project:
-
-1. Add it to the dependencies in your `Package.swift` file:
-
-```swift
-let package = Package(
-    ...
-    dependencies: [
-        .package(url: "https://github.com/alexandrehsaad/swift-motion.git", branch: "main")
-    ],
-    ...
-)
-```
-
-2. Add it as a dependency for your target in your `Package.swift` file:
-
-```swift
-let package = Package(
-    ...
-    targets: [
-        .target(name: "MyTarget", dependencies: [
-            .product(name: "Motion", package: "swift-motion")
-        ]),
-    ],
-    ...
-)
-```
-
-3. Import the package in your source code.
-
-```swift
-import Motion
-```
+A wrapper on the CoreMotion framework replacing the callback pattern with Swift concurrency.
 
 ## Contribution
 
 ### Reporting a bug
 
-If you find a bug, please open a bug report.
+If you find a bug, please create an issue.
 
 ### Contacting the maintainers
 
@@ -48,8 +14,8 @@ The current code owner of this package is Alexandre H. Saad ([@alexandrehsaad](h
 
 ## Supporting
 
-If you like our work, show your support by staring this repository.
-
+If you like my work, show your support by staring this repository.
+ 
 ## Feedback
 
-We would love to hear your thoughts or feedback on how we can improve Swift Motion!
+We would love to hear your thoughts or feedback on how Swift Motions could be improved!
