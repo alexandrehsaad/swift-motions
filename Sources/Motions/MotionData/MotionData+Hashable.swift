@@ -1,11 +1,11 @@
 // MotionData+Hashable.swift
-// Motion
+// Motions
 //
 // Copyright © 2021 Alexandre H. Saad
 //
 
 extension MotionData: Hashable {
-	public func hash(into hasher: inout Hasher) {
+	internal func hash(into hasher: inout Hasher) {
 		hasher.combine(self.acceleration)
 		hasher.combine(self.magneticField)
 		hasher.combine(self.rotationRate)

@@ -1,11 +1,11 @@
 // MotionData.swift
-// Motion
+// Motions
 //
 // Copyright © 2021 Alexandre H. Saad
 //
 
-///
-public struct MotionData {
+/// A structure containing all three sensors.
+internal struct MotionData {
 	
 	// MARK: - Creating Instances
 	

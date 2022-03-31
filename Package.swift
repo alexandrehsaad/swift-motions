@@ -6,10 +6,10 @@ let package = Package(
     name: "swift-motions",
     defaultLocalization: "en",
 	platforms: [
-		.iOS(.v9),
-		.macCatalyst(.v13),
+		.iOS(.v13),
+		.macCatalyst(.v15),
 		.macOS(.v10_15),
-		.watchOS(.v2)
+		.watchOS(.v6)
 	],
     products: [
         .library(name: "Motions", targets: ["Motions"])

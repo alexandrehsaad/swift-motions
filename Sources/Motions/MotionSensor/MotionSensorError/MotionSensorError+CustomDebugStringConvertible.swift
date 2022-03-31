@@ -1,20 +1,20 @@
 // MotionSensorError+CustomDebugStringConvertible.swift
-// Motion
+// Motions
 //
 // Copyright © 2021 Alexandre H. Saad
 //
 
 extension MotionSensorError: CustomDebugStringConvertible {
-	public var debugDescription: String {
+	internal var debugDescription: String {
 		switch self {
 		case .inactive(let sensor):
-			return "\(sensor.rawValue) is inactive"
+			return "\(sensor.rawValue.capitalized) is inactive"
 		case .unavailable(let sensor):
-			return "\(sensor?.rawValue ?? "A sensor") is unavailable"
+			return "\(sensor?.rawValue.capitalized ?? "A sensor") is unavailable"
 		case .unequalFrequencies:
 			return "Some frequencies are unequal"
 		case .unresubscribable(let sensor):
-			return "\(sensor?.rawValue ?? "A sensor") is unable to resubscribe."
+			return "\(sensor?.rawValue.capitalized ?? "A sensor") is unable to resubscribe."
 		}
 	}
 }

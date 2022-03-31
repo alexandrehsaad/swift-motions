@@ -5,7 +5,7 @@
 //
 
 /// A representation of a motion sensor error.
-public enum MotionSensorError: Error {
+internal enum MotionSensorError: Error {
 	/// The specified sensor is inactive.
 	case inactive(_ sensor: MotionSensor)
 	

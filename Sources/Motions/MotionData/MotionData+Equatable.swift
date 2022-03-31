@@ -5,7 +5,7 @@
 //
 
 extension MotionData: Equatable {
-	public static func == (lhs: Self, rhs: Self) -> Bool {
+	internal static func == (lhs: Self, rhs: Self) -> Bool {
 		return lhs.acceleration == rhs.acceleration
 			&& lhs.magneticField == rhs.magneticField
 			&& lhs.rotationRate == rhs.rotationRate
