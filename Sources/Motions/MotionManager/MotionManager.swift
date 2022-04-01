@@ -9,7 +9,7 @@
 
 import CoreMotion
 
-/// A reprensentation of the motion manager.
+/// A representation of the motion manager.
 @available(iOS 13, macCatalyst 15, macOS 10.5, watchOS 6, *)
 public final class MotionManager {
 	/// The underlying motion manager from Apple's CoreMotion framework.
@@ -27,7 +27,7 @@ public final class MotionManager {
 		self.unsubscribeFromAllMeters()
 	}
 	
-	// MARK: -
+	// MARK: - Checking Availabilities
 	
 	/// A boolean value indicating whether the accelerometers are available.
 	public var areAccelerometersAvailable: Bool {
@@ -62,7 +62,7 @@ public final class MotionManager {
 	/// Requests the user’s permission to use motion services.
 	///
 	/// - throws: An authorization not changeable error.
-	/// - returns: A discarbale authorization status.
+	/// - returns: A discardable authorization status.
 	@discardableResult
 	public func requestAuthorization() async throws -> AuthorizationStatus {
 		guard self.authorizationStatus == .undetermined else {
@@ -70,14 +70,16 @@ public final class MotionManager {
 		}
 		
 		return try await withCheckedThrowingContinuation { (continuation) in
-			self.motionManager.startAccelerometerUpdates(to: .main) { (data, _) in
+			self.motionManager.startAccelerometerUpdates(to: .main) { (data, error) in
 				self.motionManager.stopAccelerometerUpdates()
 				
-				if data != nil {
+				// FIXME: better handle errors from the callback
+				if let error = error {
+					print(error.localizedDescription)
+					continuation.resume(throwing: error)
+				} else if data != nil {
+					print("Motion services were authorized.")
 					continuation.resume(returning: .authorized)
-				} else {
-					// FIXME: Get the error as a CMError from the callback to throw a ServiceError.
-					continuation.resume(throwing: ServiceError.unknown)
 				}
 			}
 		}
@@ -129,7 +131,14 @@ public final class MotionManager {
 		}
 		
 		return AsyncStream { (continuation) in
-			self.motionManager.startAccelerometerUpdates(to: .init()) { (data, _) in
+			self.motionManager.startAccelerometerUpdates(to: .init()) { (data, error) in
+				// FIXME: better handle errors from the callback
+				if let error = error {
+					print(error.localizedDescription)
+					continuation.finish()
+					return
+				}
+				
 				guard let data: CMAccelerometerData = data else {
 					continuation.finish()
 					return
@@ -174,7 +183,14 @@ public final class MotionManager {
 		}
 		
 		return AsyncStream { (continuation) in
-			self.motionManager.startGyroUpdates(to: .init()) { (data, _) in
+			self.motionManager.startGyroUpdates(to: .init()) { (data, error) in
+				// FIXME: better handle errors from the callback
+				if let error = error {
+					print(error.localizedDescription)
+					continuation.finish()
+					return
+				}
+				
 				guard let data: CMGyroData = data else {
 					continuation.finish()
 					return
@@ -219,7 +235,14 @@ public final class MotionManager {
 		}
 		
 		return AsyncStream { (continuation) in
-			self.motionManager.startMagnetometerUpdates(to: .init()) { (data, _) in
+			self.motionManager.startMagnetometerUpdates(to: .init()) { (data, error) in
+				// FIXME: better handle errors from the callback
+				if let error = error {
+					print(error.localizedDescription)
+					continuation.finish()
+					return
+				}
+				
 				guard let data: CMMagnetometerData = data else {
 					continuation.finish()
 					return
