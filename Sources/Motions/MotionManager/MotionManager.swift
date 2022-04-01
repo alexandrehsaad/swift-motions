@@ -49,42 +49,6 @@ public final class MotionManager {
 		return self.motionManager.isDeviceMotionAvailable
 	}
 	
-	// MARK: - Requesting Authorizations
-	
-	/// The app’s authorization status for using motion services.
-	public private(set) var authorizationStatus: AuthorizationStatus = .undetermined
-	
-	/// A boolean value indicating whether the user has authorized to share his motion.
-	public var isAuthorizedToRecord: Bool {
-		return self.authorizationStatus.isAuthorized
-	}
-	
-	/// Requests the user’s permission to use motion services.
-	///
-	/// - throws: An authorization not changeable error.
-	/// - returns: A discardable authorization status.
-	@discardableResult
-	public func requestAuthorization() async throws -> AuthorizationStatus {
-		guard self.authorizationStatus == .undetermined else {
-			throw ServiceError.notChangeable
-		}
-		
-		return try await withCheckedThrowingContinuation { (continuation) in
-			self.motionManager.startAccelerometerUpdates(to: .main) { (data, error) in
-				self.motionManager.stopAccelerometerUpdates()
-				
-				// FIXME: better handle errors from the callback
-				if let error = error {
-					print(error.localizedDescription)
-					continuation.resume(throwing: error)
-				} else if data != nil {
-					print("Motion services were authorized.")
-					continuation.resume(returning: .authorized)
-				}
-			}
-		}
-	}
-	
 	// MARK: - Subscribing to Streams
 	
 	/// A boolean value indicating whether the accelerometers are active.
@@ -124,10 +88,6 @@ public final class MotionManager {
 	public func subscribeToAccelerometers() throws -> AsyncStream<Acceleration> {
 		guard self.areAccelerometersAvailable else {
 			throw ServiceError.notAvailable
-		}
-		
-		guard self.isAuthorizedToRecord else {
-			throw ServiceError.notAuthorized
 		}
 		
 		return AsyncStream { (continuation) in
@@ -178,10 +138,6 @@ public final class MotionManager {
 			throw ServiceError.notAvailable
 		}
 		
-		guard self.isAuthorizedToRecord else {
-			throw ServiceError.notAuthorized
-		}
-		
 		return AsyncStream { (continuation) in
 			self.motionManager.startGyroUpdates(to: .init()) { (data, error) in
 				// FIXME: better handle errors from the callback
@@ -228,10 +184,6 @@ public final class MotionManager {
 	public func subscribeToMagnetometers() throws -> AsyncStream<MagneticField> {
 		guard self.areMagnetometersAvailable else {
 			throw ServiceError.notAvailable
-		}
-		
-		guard self.isAuthorizedToRecord else {
-			throw ServiceError.notAuthorized
 		}
 		
 		return AsyncStream { (continuation) in
@@ -281,10 +233,6 @@ public final class MotionManager {
 	public func subscribeToAllMeters() throws -> AsyncStream<(Acceleration, RotationRate, MagneticField)> {
 		guard self.areAllMetersAvailable else {
 			throw ServiceError.notAvailable
-		}
-		
-		guard self.isAuthorizedToRecord else {
-			throw ServiceError.notAuthorized
 		}
 		
 		return AsyncStream { (continuation) in

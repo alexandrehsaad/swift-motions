@@ -44,24 +44,11 @@ import Motions
 let manager: MotionManager = .shared
 ```
 
-5. Requests the user’s permission to use location services and do something with the asynchronous value you receive. You can not show twice to the user an authorization dialog, but you can show the steps to change the permission from Settings.
+5. Subscribe to meters and do something with the asynchronous stream of values you receive. The return type from the accelerometers is `Acceleration`, the gyrometers is `RotationRate` and the magnetometers is `MagneticField`. All three data types conform to `PlottableInThreeDimensions`.
 
 ```swift
 do {
-    let status: AuthorizationStatus = try await manager.requestAuthorization()
-    // Do something with the status.
-    print(status)
-} catch let error {
-    // Do something with the error.
-    print(error)
-}
-```
-
-6. Subscribe to a meter and do something with the asynchronous stream of values you receive. The return type from the accelerometers is `Acceleration`, the gyrometers is `RotationRate` and the magnetometers is `MagneticField`. All three data types conform to `PlottableInThreeDimensions`.
-
-```swift
-do {
-    let stream: AsyncStream<Acceleration> = try manager.subscribeToAccelerometer()
+    let stream: AsyncStream<Acceleration> = try manager.subscribeToAccelerometers()
     for await data in stream {
         // Do something with the data.
         print(data)
@@ -72,7 +59,7 @@ do {
 }
 ```
 
-7. Unsubscribe from the meter.
+6. Unsubscribe from the meters.
 
 ```swift
 manager.unsubscribeFromAccelerometer()
