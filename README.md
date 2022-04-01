@@ -62,7 +62,7 @@ do {
 6. Unsubscribe from the meters.
 
 ```swift
-manager.unsubscribeFromAccelerometer()
+manager.unsubscribeFromAccelerometers()
 ```
 
 ## Troubleshooting
