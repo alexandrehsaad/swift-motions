@@ -1,7 +1,8 @@
 // MotionManager.swift
 // Motions
 //
-// Copyright © 2021 Alexandre H. Saad
+// Copyright © 2021-2022 Alexandre H. Saad
+// Licensed under Apache License v2.0 with Runtime Library Exception
 //
 
 #if !os(macOS) && canImport(CoreMotion)
@@ -22,84 +23,109 @@ public final class MotionManager {
 	/// The shared instance.
 	public static let shared: MotionManager = .init()
 	
+	deinit {
+		self.unsubscribeFromAllMeters()
+	}
+	
 	// MARK: -
 	
-	/// A boolean value indicating whether the accelerometer is available.
-	public var isAccelerometerAvailable: Bool {
+	/// A boolean value indicating whether the accelerometers are available.
+	public var areAccelerometersAvailable: Bool {
 		return self.motionManager.isAccelerometerAvailable
 	}
 	
-	/// A boolean value indicating whether the gyrometer is available.
-	public var isGyrometerAvailable: Bool {
+	/// A boolean value indicating whether the gyrometers are available.
+	public var areGyrometersAvailable: Bool {
 		return self.motionManager.isGyroAvailable
 	}
 	
-	/// A boolean value indicating whether the magnetometer is available.
-	public var isMagnetometerAvailable: Bool {
+	/// A boolean value indicating whether the magnetometers are available.
+	public var areMagnetometersAvailable: Bool {
 		return self.motionManager.isMagnetometerAvailable
 	}
 	
-	/// A boolean value indicating whether all sensors are available.
-	public var areAllSensorsAvailable: Bool {
+	/// A boolean value indicating whether all meters are available.
+	public var areAllMetersAvailable: Bool {
 		return self.motionManager.isDeviceMotionAvailable
 	}
 	
 	// MARK: - Requesting Authorizations
 	
 	/// The app’s authorization status for using motion services.
-	public var authorizationStatus: AuthorizationStatus {
-		return CMSensorRecorder.authorizationStatus().clone
-	}
+	public private(set) var authorizationStatus: AuthorizationStatus = .undetermined
 	
 	/// A boolean value indicating whether the user has authorized to share his motion.
 	public var isAuthorizedToRecord: Bool {
 		return self.authorizationStatus.isAuthorized
 	}
 	
-	// MARK: -
-	
-	/// A boolean value indicating whether the accelerometer is active.
-	public var isAccelerometerActive: Bool {
-		return self.motionManager.isAccelerometerActive
-	}
-	
-	/// A boolean value indicating whether the gyrometer is active.
-	public var isGyrometerActive: Bool {
-		return self.motionManager.isGyroActive
-	}
-	
-	/// A boolean value indicating whether the magnetometer is active.
-	public var isMagnetometerActive: Bool {
-		return self.motionManager.isMagnetometerActive
-	}
-	
-	/// A boolean value indicating whether all sensors are active.
-	public var areAllSensorsActive: Bool {
-		return (self.isGyrometerActive && self.isMagnetometerActive && self.areAllSensorsActive)
-			|| self.motionManager.isDeviceMotionActive
-	}
-	
-	/// A boolean value indicating whether any sensors are active.
-	public var areAnySensorsActive: Bool {
-		return self.isAccelerometerActive
-			|| self.isGyrometerActive
-			|| self.isMagnetometerActive
-			|| self.motionManager.isDeviceMotionActive
+	/// Requests the user’s permission to use motion services.
+	///
+	/// - throws: An authorization not changeable error.
+	/// - returns: A discarbale authorization status.
+	@discardableResult
+	public func requestAuthorization() async throws -> AuthorizationStatus {
+		guard self.authorizationStatus == .undetermined else {
+			throw ServiceError.notChangeable
+		}
+		
+		return try await withCheckedThrowingContinuation { (continuation) in
+			self.motionManager.startAccelerometerUpdates(to: .main) { (data, _) in
+				self.motionManager.stopAccelerometerUpdates()
+				
+				if data != nil {
+					continuation.resume(returning: .authorized)
+				} else {
+					// FIXME: Get the error as a CMError from the callback to throw a ServiceError.
+					continuation.resume(throwing: ServiceError.unknown)
+				}
+			}
+		}
 	}
 	
 	// MARK: - Subscribing to Streams
 	
-	/// Subscribes to the accelerometer.
+	/// A boolean value indicating whether the accelerometers are active.
+	public var areAccelerometersActive: Bool {
+		return self.motionManager.isAccelerometerActive
+	}
+	
+	/// A boolean value indicating whether the gyrometers are active.
+	public var areGyrometersActive: Bool {
+		return self.motionManager.isGyroActive
+	}
+	
+	/// A boolean value indicating whether the magnetometers are active.
+	public var areMagnetometersActive: Bool {
+		return self.motionManager.isMagnetometerActive
+	}
+	
+	/// A boolean value indicating whether all meters are active.
+	public var areAllMetersActive: Bool {
+		return (self.areGyrometersActive && self.areMagnetometersActive && self.areAllMetersActive)
+			|| self.motionManager.isDeviceMotionActive
+	}
+	
+	/// A boolean value indicating whether any meters are active.
+	public var areAnyMetersActive: Bool {
+		return self.areAccelerometersActive
+			|| self.areGyrometersActive
+			|| self.areMagnetometersActive
+			|| self.motionManager.isDeviceMotionActive
+	}
+	
+	/// Subscribes to the accelerometers.
 	///
-	/// - throws: A motion sensor error.
-	/// - returns: An asynchronous stream of data from the accelerometer.
-	public func subscribeToAccelerometer() throws -> AsyncStream<Acceleration> {
-		guard self.isAccelerometerAvailable else {
-			throw MotionSensorError.unavailable(.accelerometer)
+	/// - throws: A service not available error.
+	/// - throws: A service not authorized error.
+	/// - returns: An asynchronous stream of data from the accelerometers.
+	public func subscribeToAccelerometers() throws -> AsyncStream<Acceleration> {
+		guard self.areAccelerometersAvailable else {
+			throw ServiceError.notAvailable
 		}
 		
-		guard self.isAccelerometerActive == false && self.areAllSensorsActive == false else {
-			throw MotionSensorError.unresubscribable(.accelerometer)
+		guard self.isAuthorizedToRecord else {
+			throw ServiceError.notAuthorized
 		}
 		
 		return AsyncStream { (continuation) in
@@ -117,20 +143,34 @@ public final class MotionManager {
 				
 				continuation.yield(acceleration)
 			}
+			
+			continuation.onTermination = { @Sendable (termination) in
+				switch termination {
+				case .cancelled:
+					print("Accelerometers stream was cancelled.")
+				case .finished:
+					print("Accelerometers stream was finished.")
+				@unknown default:
+					fatalError()
+				}
+				
+				self.motionManager.stopAccelerometerUpdates()
+			}
 		}
 	}
 	
-	/// Subscribes to the gyrometer.
+	/// Subscribes to the gyrometers.
 	///
-	/// - throws: A motion sensor error.
-	/// - returns: An asynchronous stream of data from the gyrometer.
-	public func subscribeToGyrometer() throws -> AsyncStream<RotationRate> {
-		guard self.isGyrometerAvailable else {
-			throw MotionSensorError.unavailable(.gyrometer)
+	/// - throws: A service not available error.
+	/// - throws: A service not authorized error.
+	/// - returns: An asynchronous stream of data from the gyrometers.
+	public func subscribeToGyrometers() throws -> AsyncStream<RotationRate> {
+		guard self.areGyrometersAvailable else {
+			throw ServiceError.notAvailable
 		}
 		
-		guard self.isGyrometerActive == false && self.areAllSensorsActive == false else {
-			throw MotionSensorError.unresubscribable(.gyrometer)
+		guard self.isAuthorizedToRecord else {
+			throw ServiceError.notAuthorized
 		}
 		
 		return AsyncStream { (continuation) in
@@ -148,20 +188,34 @@ public final class MotionManager {
 				
 				continuation.yield(rotationRate)
 			}
+			
+			continuation.onTermination = { @Sendable (termination) in
+				switch termination {
+				case .cancelled:
+					print("Gyrometers stream was cancelled.")
+				case .finished:
+					print("Gyrometers stream was finished.")
+				@unknown default:
+					fatalError()
+				}
+				
+				self.motionManager.stopGyroUpdates()
+			}
 		}
 	}
 	
-	/// Subscribes to the magnetometer.
+	/// Subscribes to the magnetometers.
 	///
-	/// - throws: A motion sensor error.
-	/// - returns: An asynchronous stream of data from the magnetometer.
-	public func subscribeToMagnetometer() throws -> AsyncStream<MagneticField> {
-		guard self.isMagnetometerAvailable else {
-			throw MotionSensorError.unavailable(.magnetometer)
+	/// - throws: A service not available error.
+	/// - throws: A service not authorized error.
+	/// - returns: An asynchronous stream of data from the magnetometers.
+	public func subscribeToMagnetometers() throws -> AsyncStream<MagneticField> {
+		guard self.areMagnetometersAvailable else {
+			throw ServiceError.notAvailable
 		}
 		
-		guard self.isMagnetometerActive == false && self.areAllSensorsActive == false else {
-			throw MotionSensorError.unresubscribable(.magnetometer)
+		guard self.isAuthorizedToRecord else {
+			throw ServiceError.notAuthorized
 		}
 		
 		return AsyncStream { (continuation) in
@@ -179,59 +233,51 @@ public final class MotionManager {
 				
 				continuation.yield(magneticField)
 			}
+			
+			continuation.onTermination = { @Sendable (termination) in
+				switch termination {
+				case .cancelled:
+					print("Magnetometers stream was cancelled.")
+				case .finished:
+					print("Magnetometers stream was finished.")
+				@unknown default:
+					fatalError()
+				}
+				
+				self.motionManager.stopMagnetometerUpdates()
+			}
 		}
 	}
 	
-	/// Subscribes to all sensors.
+	/// Subscribes to all meters.
 	///
-	/// - throws: A motion sensor error.
-	/// - returns: A motion sensor error.
-	internal func subscribeToAllSensors() throws -> AsyncStream<MotionData> {
-		guard self.areAllSensorsAvailable else {
-			throw MotionSensorError.unavailable()
+	/// - throws: A service not available error.
+	/// - throws: A service not authorized error.
+	/// - returns: An asynchronous stream of data from all the meters.
+	@available(*, unavailable)
+	public func subscribeToAllMeters() throws -> AsyncStream<(Acceleration, RotationRate, MagneticField)> {
+		guard self.areAllMetersAvailable else {
+			throw ServiceError.notAvailable
 		}
 		
-		// Block device motion updates.
-		guard self.areAnySensorsActive == false else {
-			throw MotionSensorError.unresubscribable()
+		guard self.isAuthorizedToRecord else {
+			throw ServiceError.notAuthorized
 		}
 		
-		guard self.areAllFrequenciesEqual else {
-			throw MotionSensorError.unequalFrequencies
-		}
-
 		return AsyncStream { (continuation) in
-			self.motionManager.startDeviceMotionUpdates(using: .xArbitraryZVertical, to: .init()) { (data, _) in
-				guard let data: CMDeviceMotion = data else {
-					continuation.finish()
-					return
+			// TODO: subscribe to all meters
+			
+			continuation.onTermination = { @Sendable (termination) in
+				switch termination {
+				case .cancelled:
+					print("All meters streams were cancelled.")
+				case .finished:
+					print("All meters streams were finished.")
+				@unknown default:
+					fatalError()
 				}
 				
-				let acceleration: Acceleration = .init(
-					x: data.userAcceleration.x,
-					y: data.userAcceleration.y,
-					z: data.userAcceleration.z
-				)
-				
-				let rotationRate: RotationRate = .init(
-					x: data.rotationRate.x,
-					y: data.rotationRate.y,
-					z: data.rotationRate.z
-				)
-				
-				let magneticField: MagneticField = .init(
-					x: data.magneticField.field.x,
-					y: data.magneticField.field.y,
-					z: data.magneticField.field.z
-				)
-				
-				let motion: MotionData = .init(
-					acceleration: acceleration,
-					magneticField: magneticField,
-					rotationRate: rotationRate
-				)
-				
-				continuation.yield(motion)
+				self.motionManager.stopDeviceMotionUpdates()
 			}
 		}
 	}
@@ -239,129 +285,88 @@ public final class MotionManager {
 	// MARK: - Unsubscribing from Streams
 	
 	/// Unsubscribes from the accelerometer.
-	///
-	/// - throws: A motion sensor error.
-	public func unsubscribeFromAccelerometer() {
-		if self.motionManager.isDeviceMotionActive {
-			// Stop device motion updates.
-			self.motionManager.stopDeviceMotionUpdates()
-		} else {
-			self.motionManager.stopAccelerometerUpdates()
-		}
+	public func unsubscribeFromAccelerometers() {
+		self.motionManager.stopAccelerometerUpdates()
 	}
 	
-	/// Unsubscribes from the gyrometer.
-	///
-	/// - throws: A motion sensor error.
-	public func unsubscribeFromGyrometer() {
-		if self.motionManager.isDeviceMotionActive {
-			// Stop device motion updates.
-			self.motionManager.stopDeviceMotionUpdates()
-		} else {
-			self.motionManager.stopGyroUpdates()
-		}
+	/// Unsubscribes from the gyrometers.
+	public func unsubscribeFromGyrometers() {
+		self.motionManager.stopGyroUpdates()
 	}
 	
-	/// Unsubscribes from the magnetometer.
-	///
-	/// - throws: A motion sensor error.
-	public func unsubscribeFromMagnetometer() {
-		if self.motionManager.isDeviceMotionActive {
-			// Stop device motion updates.
-			self.motionManager.stopDeviceMotionUpdates()
-		} else {
-			self.motionManager.stopMagnetometerUpdates()
-		}
+	/// Unsubscribes from the magnetometers.
+	public func unsubscribeFromMagnetometers() {
+		self.motionManager.stopMagnetometerUpdates()
 	}
 	
-	/// Unsubscribes from all sensors.
-	public func unsubscribeFromAllSensors() {
-		if self.motionManager.isDeviceMotionActive {
-			// Stop device motion updates.
-			self.motionManager.stopDeviceMotionUpdates()
-		} else {
-			self.unsubscribeFromAccelerometer()
-			self.unsubscribeFromGyrometer()
-			self.unsubscribeFromMagnetometer()
-		}
+	/// Unsubscribes from all meters.
+	public func unsubscribeFromAllMeters() {
+		self.unsubscribeFromAccelerometers()
+		self.unsubscribeFromGyrometers()
+		self.unsubscribeFromMagnetometers()
 	}
 	
-	// MARK: - Sensors Frequencies
-	
-	/// A boolean value indicating whether all frequencies are equal.
-	private var areAllFrequenciesEqual: Bool {
-		let frequencies: [Measure<Frequency>] = [
-			self.accelerometerFrequency,
-			self.gyrometerFrequency,
-			self.magnetometerFrequency
-		]
-		
-		return frequencies.areEqual
-	}
+	// MARK: - Meters Frequencies
 	
 	/// The cycles per second at which to deliver accelerometer data.
-	public var accelerometerFrequency: Measure<Frequency> {
+	public var accelerometersFrequency: Measure<Frequency> {
 		let value: Double = self.motionManager.accelerometerUpdateInterval
 		
 		return .init(value, .hertz)
 	}
 	
 	/// The cycles per second at which to deliver gyrometer data.
-	public var gyrometerFrequency: Measure<Frequency> {
+	public var gyrometersFrequency: Measure<Frequency> {
 		let value: Double = self.motionManager.gyroUpdateInterval
 		
 		return .init(value, .hertz)
 	}
 	
 	/// The cycles per second at which to deliver magnetometer data.
-	public var magnetometerFrequency: Measure<Frequency> {
+	public var magnetometersFrequency: Measure<Frequency> {
 		let value: Double = self.motionManager.magnetometerUpdateInterval
 		
 		return .init(value, .hertz)
 	}
 	
+	/// A boolean value indicating whether all frequencies are equal.
+	private var areAllFrequenciesEqual: Bool {
+		let frequencies: [Measure<Frequency>] = [
+			self.accelerometersFrequency,
+			self.gyrometersFrequency,
+			self.magnetometersFrequency
+		]
+		
+		return frequencies.areEqual
+	}
+	
 	// MARK: - Updating Frequencies
 	
-	/// Updates the accelerometer frequency.
-	public func updateAccelerometer(to frequency: Measure<Frequency>) {
+	/// Updates the accelerometers frequency.
+	public func updateAccelerometers(to frequency: Measure<Frequency>) {
 		let interval: Double = frequency.converted(to: .second).value
 		self.motionManager.accelerometerUpdateInterval = interval
-		
-		if self.areAllFrequenciesEqual {
-			// Update device motion frequency.
-			self.motionManager.deviceMotionUpdateInterval = interval
-		}
 	}
 	
-	/// Updates the gyrometer frequency.
-	public func updateGyrometer(to frequency: Measure<Frequency>) {
+	/// Updates the gyrometers frequency.
+	public func updateGyrometers(to frequency: Measure<Frequency>) {
 		let interval: Double = frequency.converted(to: .second).value
 		self.motionManager.gyroUpdateInterval = interval
-		
-		if self.areAllFrequenciesEqual {
-			// Update device motion frequency.
-			self.motionManager.deviceMotionUpdateInterval = interval
-		}
 	}
 	
-	/// Updates the magnetometer frequency.
-	public func updateMagnetometer(to frequency: Measure<Frequency>) {
+	/// Updates the magnetometers frequency.
+	public func updateMagnetometers(to frequency: Measure<Frequency>) {
 		let interval: Double = frequency.converted(to: .second).value
 		self.motionManager.magnetometerUpdateInterval = interval
-		
-		if self.areAllFrequenciesEqual {
-			// Update device motion frequency.
-			self.motionManager.deviceMotionUpdateInterval = interval
-		}
 	}
 	
-	/// Updates all sensors frequency.
+	/// Updates all meters frequency.
 	///
 	/// - Parameter frequency: The new frequency.
-	public func updateAllSensors(to frequency: Measure<Frequency>) {
-		self.updateAccelerometer(to: frequency)
-		self.updateGyrometer(to: frequency)
-		self.updateMagnetometer(to: frequency)
+	public func updateAllMeters(to frequency: Measure<Frequency>) {
+		self.updateAccelerometers(to: frequency)
+		self.updateGyrometers(to: frequency)
+		self.updateMagnetometers(to: frequency)
 	}
 }
 
