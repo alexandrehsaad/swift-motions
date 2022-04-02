@@ -2,7 +2,7 @@
 
 import PackageDescription
 
-let package = Package(
+let package: Package = .init(
     name: "swift-motions",
     defaultLocalization: "en",
 	platforms: [
