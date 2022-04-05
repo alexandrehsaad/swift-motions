@@ -58,7 +58,7 @@ import Motions
 let manager: MotionManager = .shared
 ```
 
-3. Subscribe to meters and do something with the asynchronous stream of values you receive. The return type from the accelerometers is `Acceleration`, the gyrometers is `RotationRate` and the magnetometers is `MagneticField`. All three data types conform to `PlottableInThreeDimensions`.
+3. Subscribe to meters and do something with the asynchronous stream of values you receive. The return type from the accelerometers is `Acceleration`, the gyrometers is `RotationRate` and the magnetometer is `MagneticField`. All three data types conform to `PlottableInThreeDimensions`.
 
 ```swift
 do {
