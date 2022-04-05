@@ -2,15 +2,21 @@
 
 A wrapper on the CoreMotion framework replacing the completion blocks with Swift concurrency.
 
+## Overview
+
+CoreMotion reports motion and environment related data from the accelerometers, gyrometers, magnetometer and barometer on iOS devices.
+
 ## Availability
 
 - iOS 13.0+
-- iPadOS 4.0+
+- iPadOS 13.0+
 - macCatalyst 15.0+
 - macOS 10.15+
 - watchOS 6.0+
 
 ## Installation
+
+The Swift Package Manager is a tool for managing the distribution of Swift code and is integrated into the swift compiler.
 
 1. Add the package to the dependencies in your `Package.swift` file.
 
@@ -38,21 +44,21 @@ let package: Package = .init(
 )
 ```
 
-3. Import the package in your source code.
+## Demonstration
+
+1. Import the package in your source code.
 
 ```swift
 import Motions
 ```
 
-## Demonstration
-
-4. Initiate the manager once.
+2. Initiate the manager once.
 
 ```swift
 let manager: MotionManager = .shared
 ```
 
-5. Subscribe to meters and do something with the asynchronous stream of values you receive. The return type from the accelerometers is `Acceleration`, the gyrometers is `RotationRate` and the magnetometers is `MagneticField`. All three data types conform to `PlottableInThreeDimensions`.
+3. Subscribe to meters and do something with the asynchronous stream of values you receive. The return type from the accelerometers is `Acceleration`, the gyrometers is `RotationRate` and the magnetometers is `MagneticField`. All three data types conform to `PlottableInThreeDimensions`.
 
 ```swift
 do {
@@ -67,7 +73,7 @@ do {
 }
 ```
 
-6. Unsubscribe from the meters.
+4. Unsubscribe from the meters.
 
 ```swift
 manager.unsubscribeFromAccelerometers()
@@ -79,7 +85,7 @@ Your app must include usage description keys in its `Info.plist` file for the ty
 
 ## Roadmap
 
-You can use this framework to access raw data from the user's accelerometers, gyrometers and magnetometers. It could be extended to support a processed version of that data.
+You can use this framework to access raw data from the user's accelerometers, gyrometers and magnetometer. It could be extended to support a processed version of that data; and support the barometer.
 
 ## Contribution
 
@@ -88,7 +94,7 @@ Contributions are what makes the open source community such an amazing place to 
 1. Fork the repository
 2. Create your feature branch `git checkout -b NewFeature`
 3. Commit your changes `git commit -m 'Added a new feature'`
-4. Push to the branch `git push origin NewFeature`
+4. Push to your branch `git push origin NewFeature`
 5. Open a pull request
 
 ### Reporting a bug
