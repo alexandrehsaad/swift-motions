@@ -1,3 +1,5 @@
+![](https://github.com/alexandrehsaad/swift-motions/blob/main/GitHubBanner.png)
+
 # swift-motions
 
 A wrapper on the CoreMotion framework replacing the completion blocks with Swift concurrency.
