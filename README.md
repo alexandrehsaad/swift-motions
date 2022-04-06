@@ -1,4 +1,4 @@
-![](https://github.com/alexandrehsaad/swift-motions/blob/main/GitHubBanner.png)
+![](Assets/GitHubBanner.png)
 
 # swift-motions
 
