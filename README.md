@@ -22,68 +22,72 @@ The Swift Package Manager is a tool for managing the distribution of Swift code 
 
 1. Add the package to the dependencies in your `Package.swift` file.
 
-```swift
-let package: Package = .init(
-    ...
-    dependencies: [
-        .package(url: "https://github.com/alexandrehsaad/swift-motions.git", branch: "main")
-    ],
-    ...
-)
-```
+    ```swift
+    let package: Package = .init(
+        ...
+        dependencies: [
+            .package(url: "https://github.com/alexandrehsaad/swift-motions.git", branch: "main")
+        ],
+        ...
+    )
+    ```
 
 2. Add the package as a dependency on your target in your `Package.swift` file.
 
-```swift
-let package: Package = .init(
-    ...
-    targets: [
-        .target(name: "MyTarget", dependencies: [
-            .product(name: "Motions", package: "swift-motions")
-        ]),
-    ],
-    ...
-)
-```
+    ```swift
+    let package: Package = .init(
+        ...
+        targets: [
+            .target(name: "MyTarget", dependencies: [
+                .product(name: "Motions", package: "swift-motions")
+            ]),
+        ],
+        ...
+    )
+    ```
 
 ## Demonstration
 
 1. Import the package in your source code.
 
-```swift
-import Motions
-```
+    ```swift
+    import Motions
+    ```
 
 2. Initiate the manager once.
 
-```swift
-let manager: MotionManager = .shared
-```
+    ```swift
+    let manager: MotionManager = .shared
+    ```
 
 3. Subscribe to meters and do something with the asynchronous stream of values you receive. The return type from the accelerometers is `Acceleration`, the gyrometers is `RotationRate` and the magnetometer is `MagneticField`. All three data types conform to `PlottableInThreeDimensions`.
 
-```swift
-do {
-    let stream: AsyncStream<Acceleration> = try manager.subscribeToAccelerometers()
-    for await data in stream {
-        // Do something with the data.
-        print(data)
+    ```swift
+    do {
+        let stream: AsyncStream<Acceleration> = try manager.subscribeToAccelerometers()
+        for await data in stream {
+            // Do something with the data.
+            print(data)
+        }
+    } catch let error {
+        // Do something with the error.
+        print(error)
     }
-} catch let error {
-    // Do something with the error.
-    print(error)
-}
-```
+    ```
 
 4. Unsubscribe from the meters.
 
-```swift
-manager.unsubscribeFromAccelerometers()
-```
+    ```swift
+    manager.unsubscribeFromAccelerometers()
+    ```
 
-## Troubleshooting
+### Troubleshooting common errors
 
 Your app must include usage description keys in its `Info.plist` file for the types of data it needs. Failure to include these keys cause the app to crash. To access motion data specifically, it must include `NSMotionUsageDescription`.
+
+## Documentation
+
+You can read more about this package by visiting the [documentation page](https://alexandrehsaad.github.io/swift-motions/documentation/motions/).
 
 ## Roadmap
 

@@ -39,8 +39,8 @@ public final class MotionManager {
 		return self.motionManager.isGyroAvailable
 	}
 	
-	/// A boolean value indicating whether the magnetometers are available.
-	public var areMagnetometersAvailable: Bool {
+	/// A boolean value indicating whether the magnetometer is available.
+	public var isMagnetometerAvailable: Bool {
 		return self.motionManager.isMagnetometerAvailable
 	}
 	
@@ -61,14 +61,14 @@ public final class MotionManager {
 		return self.motionManager.isGyroActive
 	}
 	
-	/// A boolean value indicating whether the magnetometers are active.
-	public var areMagnetometersActive: Bool {
+	/// A boolean value indicating whether the magnetometer is active.
+	public var isMagnetometerActive: Bool {
 		return self.motionManager.isMagnetometerActive
 	}
 	
 	/// A boolean value indicating whether all meters are active.
 	public var areAllMetersActive: Bool {
-		return (self.areGyrometersActive && self.areMagnetometersActive && self.areAllMetersActive)
+		return (self.areAccelerometersActive && self.areGyrometersActive && self.isMagnetometerActive)
 			|| self.motionManager.isDeviceMotionActive
 	}
 	
@@ -76,7 +76,7 @@ public final class MotionManager {
 	public var areAnyMetersActive: Bool {
 		return self.areAccelerometersActive
 			|| self.areGyrometersActive
-			|| self.areMagnetometersActive
+			|| self.isMagnetometerActive
 			|| self.motionManager.isDeviceMotionActive
 	}
 	
@@ -176,13 +176,13 @@ public final class MotionManager {
 		}
 	}
 	
-	/// Subscribes to the magnetometers.
+	/// Subscribes to the magnetometer.
 	///
 	/// - throws: A service not available error.
 	/// - throws: A service not authorized error.
-	/// - returns: An asynchronous stream of data from the magnetometers.
-	public func subscribeToMagnetometers() throws -> AsyncStream<MagneticField> {
-		guard self.areMagnetometersAvailable else {
+	/// - returns: An asynchronous stream of data from the magnetometer.
+	public func subscribeToMagnetometer() throws -> AsyncStream<MagneticField> {
+		guard self.isMagnetometerAvailable else {
 			throw ServiceError.notAvailable
 		}
 		
@@ -212,9 +212,9 @@ public final class MotionManager {
 			continuation.onTermination = { @Sendable (termination) in
 				switch termination {
 				case .cancelled:
-					print("Magnetometers stream was cancelled.")
+					print("Magnetometer stream was cancelled.")
 				case .finished:
-					print("Magnetometers stream was finished.")
+					print("Magnetometer stream was finished.")
 				@unknown default:
 					fatalError()
 				}
@@ -265,8 +265,8 @@ public final class MotionManager {
 		self.motionManager.stopGyroUpdates()
 	}
 	
-	/// Unsubscribes from the magnetometers.
-	public func unsubscribeFromMagnetometers() {
+	/// Unsubscribes from the magnetometer.
+	public func unsubscribeFromMagnetometer() {
 		self.motionManager.stopMagnetometerUpdates()
 	}
 	
@@ -274,7 +274,7 @@ public final class MotionManager {
 	public func unsubscribeFromAllMeters() {
 		self.unsubscribeFromAccelerometers()
 		self.unsubscribeFromGyrometers()
-		self.unsubscribeFromMagnetometers()
+		self.unsubscribeFromMagnetometer()
 	}
 	
 	// MARK: - Meters Frequencies
@@ -294,7 +294,7 @@ public final class MotionManager {
 	}
 	
 	/// The cycles per second at which to deliver magnetometer data.
-	public var magnetometersFrequency: Measure<Frequency> {
+	public var magnetometerFrequency: Measure<Frequency> {
 		let value: Double = self.motionManager.magnetometerUpdateInterval
 		
 		return .init(value, .hertz)
@@ -305,7 +305,7 @@ public final class MotionManager {
 		let frequencies: [Measure<Frequency>] = [
 			self.accelerometersFrequency,
 			self.gyrometersFrequency,
-			self.magnetometersFrequency
+			self.magnetometerFrequency
 		]
 		
 		return frequencies.areEqual
@@ -325,8 +325,8 @@ public final class MotionManager {
 		self.motionManager.gyroUpdateInterval = interval
 	}
 	
-	/// Updates the magnetometers frequency.
-	public func updateMagnetometers(to frequency: Measure<Frequency>) {
+	/// Updates the magnetometer frequency.
+	public func updateMagnetometer(to frequency: Measure<Frequency>) {
 		let interval: Double = frequency.converted(to: .second).value
 		self.motionManager.magnetometerUpdateInterval = interval
 	}
@@ -337,7 +337,7 @@ public final class MotionManager {
 	public func updateAllMeters(to frequency: Measure<Frequency>) {
 		self.updateAccelerometers(to: frequency)
 		self.updateGyrometers(to: frequency)
-		self.updateMagnetometers(to: frequency)
+		self.updateMagnetometer(to: frequency)
 	}
 }
 
