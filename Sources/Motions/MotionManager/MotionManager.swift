@@ -85,7 +85,7 @@ public final class MotionManager {
 	/// - throws: A service not available error.
 	/// - throws: A service not authorized error.
 	/// - returns: An asynchronous stream of data from the accelerometers.
-	public func subscribeToAccelerometers() throws -> AsyncStream<Acceleration> {
+	public func subscribeToAccelerometers() throws -> AsyncStream<Acceleration3> {
 		guard self.areAccelerometersAvailable else {
 			throw ServiceError.notAvailable
 		}
@@ -104,13 +104,13 @@ public final class MotionManager {
 					return
 				}
 				
-				let acceleration: Acceleration = .init(
+				let accelerations: Acceleration3 = .init(
 					x: data.acceleration.x,
 					y: data.acceleration.y,
 					z: data.acceleration.z
 				)
 				
-				continuation.yield(acceleration)
+				continuation.yield(accelerations)
 			}
 			
 			continuation.onTermination = { @Sendable (termination) in
@@ -133,7 +133,7 @@ public final class MotionManager {
 	/// - throws: A service not available error.
 	/// - throws: A service not authorized error.
 	/// - returns: An asynchronous stream of data from the gyrometers.
-	public func subscribeToGyrometers() throws -> AsyncStream<RotationRate> {
+	public func subscribeToGyrometers() throws -> AsyncStream<Rotation3> {
 		guard self.areGyrometersAvailable else {
 			throw ServiceError.notAvailable
 		}
@@ -152,13 +152,13 @@ public final class MotionManager {
 					return
 				}
 				
-				let rotationRate: RotationRate = .init(
+				let rotations: Rotation3 = .init(
 					x: data.rotationRate.x,
 					y: data.rotationRate.y,
 					z: data.rotationRate.z
 				)
 				
-				continuation.yield(rotationRate)
+				continuation.yield(rotations)
 			}
 			
 			continuation.onTermination = { @Sendable (termination) in
@@ -230,7 +230,7 @@ public final class MotionManager {
 	/// - throws: A service not authorized error.
 	/// - returns: An asynchronous stream of data from all the meters.
 	@available(*, unavailable)
-	public func subscribeToAllMeters() throws -> AsyncStream<(Acceleration, RotationRate, MagneticField)> {
+	public func subscribeToAllMeters() throws -> AsyncStream<(Acceleration3, Rotation3, MagneticField)> {
 		guard self.areAllMetersAvailable else {
 			throw ServiceError.notAvailable
 		}
