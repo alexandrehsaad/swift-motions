@@ -19,9 +19,12 @@ let package: Package = .init(
 		.package(url: "https://github.com/apple/swift-docc-plugin.git", .upToNextMinor(from: "1.0.0"))
 	],
 	targets: [
-		.target(name: "Motions", dependencies: [
-			.product(name: "Extensions", package: "swift-extensions")
-		]),
+		.target(
+			name: "Motions",
+			dependencies: [
+				.product(name: "Extensions", package: "swift-extensions")
+			],
+			path: "Sources"),
 	],
 	swiftLanguageVersions: [.v5]
 )
