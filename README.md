@@ -46,21 +46,21 @@ The Swift Package Manager is a tool for managing the distribution of Swift code 
     )
     ```
 
-## Demonstration
-
-1. Import the package in your source code.
+3. Import the package in your source code.
 
     ```swift
     import Motions
     ```
+    
+## Demonstration
 
-2. Initiate the manager once.
+1. Initiate the manager once.
 
     ```swift
     let manager: MotionManager = .shared
     ```
 
-3. Subscribe to meters and do something with the asynchronous stream of values you receive. The return type from the accelerometers is `Acceleration3`, the gyrometers is `Rotation3` and the magnetometer is `MagneticField`. All three data types conform to `PlottableInThreeDimensions`.
+2. Subscribe to meters and do something with the asynchronous stream of values you receive. The return type from the accelerometers is `Acceleration3`, the gyrometers is `Rotation3` and the magnetometer is `MagneticField`. All three data types conform to `PlottableInThreeDimensions`.
 
     ```swift
     do {
@@ -75,7 +75,7 @@ The Swift Package Manager is a tool for managing the distribution of Swift code 
     }
     ```
 
-4. Unsubscribe from the meters.
+3. Unsubscribe from the meters.
 
     ```swift
     manager.unsubscribeFromAccelerometers()
@@ -87,7 +87,7 @@ Your app must include usage description keys in its `Info.plist` file for the ty
 
 ## Documentation
 
-You can read more about this package by visiting the [documentation page](https://alexandrehsaad.github.io/swift-motions/documentation/motions/).
+You can read more about this package by visiting the [documentation page](https://alexandrehsaad.github.io/swift-motions/documentation/motions).
 
 ## Roadmap
 
