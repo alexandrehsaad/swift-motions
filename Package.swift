@@ -24,7 +24,8 @@ let package: Package = .init(
 			dependencies: [
 				.product(name: "Extensions", package: "swift-extensions")
 			],
-			path: "Sources"),
+			path: "Sources"
+		),
 	],
 	swiftLanguageVersions: [.v5]
 )
