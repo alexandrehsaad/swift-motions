@@ -87,34 +87,39 @@ Your app must include usage description keys in its `Info.plist` file for the ty
 
 ## Documentation
 
-You can read more about this package by visiting the [documentation page](https://alexandrehsaad.github.io/swift-motions/documentation/motions).
-
-## Roadmap
-
-You can use this framework to access raw data from the user's accelerometers, gyrometers and magnetometer. It could be extended to support a processed version of that data; and support the barometer.
+You can read more about this package by visiting the [documentation page].
 
 ## Contribution
 
-Contributions are what makes the open source community such an amazing place to learn, inspire, and create. If you wish to contribute and be part of this project, please fork the repository and create a [pull request](https://github.com/alexandrehsaad/swift-motions/pulls).
+Contributions are what makes the open source community such an amazing place to learn, inspire, and create. If you wish to contribute and be part of this project, please fork the repository and create a [pull request].
 
 1. Fork the repository
-2. Create your feature branch `git checkout -b NewFeature`
+2. Create your feature branch `git checkout -b feature/NewFeature`
 3. Commit your changes `git commit -m 'Added a new feature'`
-4. Push to your branch `git push origin NewFeature`
+4. Push to your branch `git push origin feature/NewFeature`
 5. Open a pull request
 
 ### Reporting a bug
 
-If you find a bug, please create an [issue](https://github.com/alexandrehsaad/swift-motions/issues).
+If you find a bug, please create an [issue].
 
 ### Contacting the maintainers
 
-The current code owner of this repository is Alex ([@alexandrehsaad](https://github.com/alexandrehsaad)). If you want to share your thoughts or feedback on how to improve this repository, you can contact him by writing an email to alexandresaad at icloud dot com.
+The current code owner of this repository is Alex ([@alexandrehsaad]). If you want to share your thoughts or feedback on how to improve this repository, you can contact him by writing an email to alexandresaad at icloud dot com.
 
 ### Supporting this repository
 
 If this repository has been useful to you in some way, show your support by starring it.
 
+## Code of Conduct
+
+To be a truly great community, we welcome developers from all walks of life, with different backgrounds, and with a wide range of experience. A diverse and friendly community will have more great ideas, more unique perspectives, and produce more great code. We will work diligently to make this community welcoming to everyone. See the `CODE_OF_CONDUCT.md` file for more information.
+
 ## License
 
-Distributed under Apache License v2.0 with Runtime Library Exception. See the `LICENSE.txt` file for more information.
+Distributed under Apache License v2.0 with Runtime Library Exception. See the `LICENSE.md` file for more information.
+
+[documentation page]: https://alexandrehsaad.github.io/swift-motions/documentation/motions
+[pull request]: https://github.com/alexandrehsaad/swift-motions/pulls
+[issue]: https://github.com/alexandrehsaad/swift-motions/issues
+[@alexandrehsaad]: https://github.com/alexandrehsaad
