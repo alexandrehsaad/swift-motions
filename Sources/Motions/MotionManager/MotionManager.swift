@@ -85,7 +85,7 @@ public final class MotionManager {
 	/// - throws: A service not available error.
 	/// - throws: A service not authorized error.
 	/// - returns: An asynchronous stream of data from the accelerometers.
-	public func subscribeToAccelerometers() throws -> AsyncStream<Acceleration3> {
+	public func subscribeToAccelerometers() throws -> AsyncStream<Point> {
 		guard self.areAccelerometersAvailable else {
 			throw ServiceError.notAvailable
 		}
@@ -104,7 +104,7 @@ public final class MotionManager {
 					return
 				}
 				
-				let accelerations: Acceleration3 = .init(
+				let accelerations: Point = .init(
 					x: data.acceleration.x,
 					y: data.acceleration.y,
 					z: data.acceleration.z
@@ -133,7 +133,7 @@ public final class MotionManager {
 	/// - throws: A service not available error.
 	/// - throws: A service not authorized error.
 	/// - returns: An asynchronous stream of data from the gyrometers.
-	public func subscribeToGyrometers() throws -> AsyncStream<Rotation3> {
+	public func subscribeToGyrometers() throws -> AsyncStream<Point> {
 		guard self.areGyrometersAvailable else {
 			throw ServiceError.notAvailable
 		}
@@ -152,7 +152,7 @@ public final class MotionManager {
 					return
 				}
 				
-				let rotations: Rotation3 = .init(
+				let rotations: Point = .init(
 					x: data.rotationRate.x,
 					y: data.rotationRate.y,
 					z: data.rotationRate.z
@@ -181,7 +181,7 @@ public final class MotionManager {
 	/// - throws: A service not available error.
 	/// - throws: A service not authorized error.
 	/// - returns: An asynchronous stream of data from the magnetometer.
-	public func subscribeToMagnetometer() throws -> AsyncStream<MagneticField> {
+	public func subscribeToMagnetometer() throws -> AsyncStream<Point> {
 		guard self.isMagnetometerAvailable else {
 			throw ServiceError.notAvailable
 		}
@@ -200,7 +200,7 @@ public final class MotionManager {
 					return
 				}
 				
-				let magneticField: MagneticField = .init(
+				let magneticField: Point = .init(
 					x: data.magneticField.x,
 					y: data.magneticField.y,
 					z: data.magneticField.z
@@ -230,7 +230,7 @@ public final class MotionManager {
 	/// - throws: A service not authorized error.
 	/// - returns: An asynchronous stream of data from all the meters.
 	@available(*, unavailable)
-	public func subscribeToAllMeters() throws -> AsyncStream<(Acceleration3, Rotation3, MagneticField)> {
+	public func subscribeToAllMeters() throws -> AsyncStream<(Point, Point, Point)> {
 		guard self.areAllMetersAvailable else {
 			throw ServiceError.notAvailable
 		}

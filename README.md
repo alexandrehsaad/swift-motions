@@ -60,11 +60,11 @@ The Swift Package Manager is a tool for managing the distribution of Swift code 
     let manager: MotionManager = .shared
     ```
 
-2. Subscribe to meters and do something with the asynchronous stream of values you receive. The return type from the accelerometers is `Acceleration3`, the gyrometers is `Rotation3` and the magnetometer is `MagneticField`. All three data types conform to `PlottableInThreeDimensions`.
+2. Subscribe to the accelerometers, gyrometers and the magnetometer, and do something with the asynchronous stream of values you receive. The return type is `Point` representing acceleration, rotation or magnetic field respectively, and conforming to a new protocol `PlottableInThreeDimensions`.
 
     ```swift
     do {
-        let stream: AsyncStream<Acceleration3> = try manager.subscribeToAccelerometers()
+        let stream: AsyncStream<Point> = try manager.subscribeToAccelerometers()
         for await data in stream {
             // Do something with the data.
             print(data)
