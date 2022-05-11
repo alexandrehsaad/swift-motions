@@ -10,6 +10,12 @@ import Measures
 @available(*, deprecated, renamed: "Point")
 public typealias Acceleration = Point
 
+@available(*, deprecated, renamed: "Point")
+public typealias MagneticField = Point
+
+@available(*, deprecated, renamed: "Point")
+public typealias RotationRate = Point
+
 /// A structure representing a point in 3-dimension.
 public struct Point {
 	
