@@ -5,7 +5,8 @@
 // Licensed under Apache License v2.0 with Runtime Library Exception
 //
 
-@_exported import Extensions
+@_exported import NumericProtocols
+@_exported import Measures
 
 #if canImport(CoreMotion)
 @_exported import CoreMotion
