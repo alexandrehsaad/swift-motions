@@ -6,7 +6,7 @@
 //
 
 extension Point: Equatable {
-	public static func == (lhs: Self, rhs: Self) -> Bool {
+	public static func == (_ lhs: Self, _ rhs: Self) -> Bool {
 		return lhs.x == rhs.x
 			&& lhs.y == rhs.y
 			&& lhs.z == rhs.z
