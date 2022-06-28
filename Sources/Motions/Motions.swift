@@ -7,6 +7,7 @@
 
 @_exported import NumericProtocols
 @_exported import Points
+@_exported import Measures
 
 #if canImport(CoreMotion)
 @_exported import CoreMotion

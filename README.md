@@ -54,17 +54,17 @@ The Swift Package Manager is a tool for managing the distribution of Swift code 
     
 ## Demonstration
 
-1. Initiate the manager once.
+1. Initiate the accelerometer, gyrometer or the magnetometer with your desired frequency.
 
     ```swift
-    let manager: MotionManager = .shared
+    let meter: Accelerometer = .init()
     ```
 
-2. Subscribe to the accelerometers, gyrometers and the magnetometer, and do something with the asynchronous stream of values you receive. The return type is `Point` representing acceleration, rotation or magnetic field respectively, and conforming to a new protocol `PlottableInThreeDimensions`.
+2. Subscribe to any meter, and do something with the asynchronous stream of values you receive. The return type is `Point`, which conforms to a new protocol `PlottableInThreeDimensions`.
 
     ```swift
     do {
-        let stream: AsyncStream<Point> = try manager.subscribeToAccelerometers()
+        let stream: AsyncStream<Point> = try meter.subscribe()
         for await data in stream {
             // Do something with the data.
             print(data)
@@ -75,10 +75,10 @@ The Swift Package Manager is a tool for managing the distribution of Swift code 
     }
     ```
 
-3. Unsubscribe from the meters.
+3. Unsubscribe from the meter.
 
     ```swift
-    manager.unsubscribeFromAccelerometers()
+    meter.unsubscribe()
     ```
 
 ### Troubleshooting common errors
