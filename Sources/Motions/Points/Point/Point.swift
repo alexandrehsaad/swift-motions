@@ -30,7 +30,7 @@ public struct Point {
 	where Unit: Measurable {
 		self.x = x.value
 		self.y = y.value
-		self.z =  z.value
+		self.z = z.value
 	}
 	
 	// MARK: - Instance Properties
