@@ -15,6 +15,7 @@ let package: Package = .init(
         .library(name: "Motions", targets: ["Motions"])
     ],
 	dependencies: [
+		.package(url: "https://github.com/alexandrehsaad/swift-measures.git", branch: "main"),
 		.package(url: "https://github.com/alexandrehsaad/swift-points.git", branch: "main"),
 		.package(url: "https://github.com/apple/swift-docc-plugin.git", .upToNextMinor(from: "1.0.0"))
 	],
@@ -22,6 +23,7 @@ let package: Package = .init(
 		.target(
 			name: "Motions",
 			dependencies: [
+				.product(name: "Measures", package: "swift-measures"),
 				.product(name: "Points", package: "swift-points")
 			],
 			path: "Sources"
