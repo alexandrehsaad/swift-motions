@@ -97,7 +97,7 @@ public final class Gyrometer {
 		self.motionManager.stopGyroUpdates()
 	}
 	
-	// MARK: - Updating Frequencies
+	// MARK: - Updating Frequency
 	
 	/// The cycles per second at which to deliver gyrometer data.
 	public var frequency: Measure<Frequency> {

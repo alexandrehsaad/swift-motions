@@ -97,7 +97,7 @@ public final class Accelerometer {
 		self.motionManager.stopAccelerometerUpdates()
 	}
 	
-	// MARK: - Updating Frequencies
+	// MARK: - Updating Frequency
 	
 	/// The cycles per second at which to deliver accelerometer data.
 	public var frequency: Measure<Frequency> {
