@@ -97,7 +97,7 @@ public final class Magnetometer {
 		self.motionManager.stopMagnetometerUpdates()
 	}
 	
-	// MARK: - Updating Frequencies
+	// MARK: - Updating Frequency
 	
 	/// The cycles per second at which to deliver magnetometer data.
 	public var frequency: Measure<Frequency> {
