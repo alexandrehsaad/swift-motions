@@ -1,0 +1,41 @@
+{
+  "pins" : [
+    {
+      "identity" : "swift-docc-plugin",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-docc-plugin.git",
+      "state" : {
+        "revision" : "3303b164430d9a7055ba484c8ead67a52f7b74f6",
+        "version" : "1.0.0"
+      }
+    },
+    {
+      "identity" : "swift-measures",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/alexandrehsaad/swift-measures.git",
+      "state" : {
+        "branch" : "main",
+        "revision" : "4691984d8f54beddeb78eea7b9bbba133b950752"
+      }
+    },
+    {
+      "identity" : "swift-numeric-protocols",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/alexandrehsaad/swift-numeric-protocols.git",
+      "state" : {
+        "branch" : "main",
+        "revision" : "62680e3d205cce79605824f2b6eb3844228147ec"
+      }
+    },
+    {
+      "identity" : "swift-points",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/alexandrehsaad/swift-points.git",
+      "state" : {
+        "branch" : "main",
+        "revision" : "fa2b2c4ad38d038e48fcd8ca77919233e940121e"
+      }
+    }
+  ],
+  "version" : 2
+}
